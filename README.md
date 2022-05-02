@@ -6,3 +6,9 @@
 ## 使用注意
 
 克隆到本地，项目文件夹为Video_Share_Django,用Pycharm打开这个文件夹即可进行开发
+
+
+
+### 版本要求
+
+Python 3.6及以上
