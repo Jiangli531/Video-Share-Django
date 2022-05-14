@@ -10,10 +10,8 @@ class VideoPartition(models.Model):
 
 
 class UserLetter(models.Model):
-    letterUserID = models.OneToOneField('Userinfo', on_delete=models.CASCADE)
-    letterUserName = models.CharField(max_length=30, null=False)
-    letteredUserID = models.OneToOneField('Userinfo', on_delete=models.CASCADE)
-    letteredUserName = models.CharField(max_length=30, null=False)
+    letterUser = models.OneToOneField('Userinfo', on_delete=models.CASCADE)
+    letteredUser = models.OneToOneField('Userinfo', on_delete=models.CASCADE)
     letterText = models.TextField(null=False)
     letterTime = models.DateTimeField(null=False)
     letterID = models.AutoField(primary_key=True, null=False)
