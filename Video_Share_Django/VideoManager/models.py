@@ -2,7 +2,7 @@ from django.db import models
 from UserCommunication.models import VideoPartition
 # Create your models here.
 def video_cover_directory_path(instance, filename):
-    # 文件上传到 MEDIA_ROOT/portrait/user_<id>/<filename>目录中
+    # 文件上传到 MEDIA_ROOT/portrait/video_<id>/<filename>目录中
     return 'videoCover/video_{0}/{1}'.format(instance.videoID, filename)
 
 
