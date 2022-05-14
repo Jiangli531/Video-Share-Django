@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 def user_portrait_directory_path(instance, filename):
     # 文件上传到 MEDIA_ROOT/portrait/user_<id>/<filename>目录中
@@ -20,7 +21,6 @@ class Userinfo(models.Model):
     userLimit = models.BooleanField(default=False)
     userSex = models.CharField(max_length=32, choices=gender, default="男")
     userBirthday = models.DateField()
-
 
     def __str__(self):
         return self.username
