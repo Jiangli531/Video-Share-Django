@@ -4,7 +4,7 @@ from django.db import models
 # Create your models here.
 def user_portrait_directory_path(instance, filename):
     # 文件上传到 MEDIA_ROOT/portrait/user_<id>/<filename>目录中
-    return 'portrait/user_{0}/{1}'.format(instance.id, filename)
+    return 'portrait/user_{0}/{1}'.format(instance.userID, filename)
 
 
 class Userinfo(models.Model):
@@ -12,7 +12,7 @@ class Userinfo(models.Model):
         ('male', "男"),
         ('female', "女"),
     )
-    userId = models.AutoField(primary_key=True)
+    userID = models.AutoField(primary_key=True)
     username = models.CharField(max_length=128, unique=True)
     userpassword = models.CharField(max_length=128)
     useremail = models.EmailField(unique=True)

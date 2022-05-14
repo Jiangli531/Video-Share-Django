@@ -4,5 +4,5 @@ from django.db import models
 
 
 class VideoPartition(models.Model):
-    VideoPartName = models.CharField(max_length=30, null=False)
-    VideoPartID = models.AutoField(primary_key=True, null=False)
+    videoPartName = models.CharField(max_length=30, null=False)
+    videoPartID = models.AutoField(primary_key=True, null=False)
