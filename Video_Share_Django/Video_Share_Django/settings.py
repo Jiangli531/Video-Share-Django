@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'Weblogin'
 ]
 
 MIDDLEWARE = [
@@ -83,7 +84,7 @@ DATABASES = {
         'USER': db.user,
         'PASSWORD': db.passwd,
         'HOST': db.host,
-        'POST': '3306'
+        'POST': '3306',
     }
 }
 

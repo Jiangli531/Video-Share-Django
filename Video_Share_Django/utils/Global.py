@@ -16,9 +16,9 @@ class email:
 class db:
     # database information
 
-    host = '159.75.136.86'
-    user = 'root'
-    passwd = 'SlimeDB123.'  # 修改为您本地或远程的 mysql数据库信息
+    host = '43.138.86.76'
+    user = 'buaa'
+    passwd = 'ZhaoZhao1234.'  # 修改为您本地或远程的 mysql数据库信息
     db = 'VideoShareWeb'
 
 
