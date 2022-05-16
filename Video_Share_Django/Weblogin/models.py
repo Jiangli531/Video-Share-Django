@@ -7,7 +7,7 @@ def user_portrait_directory_path(instance, filename):
     return 'portrait/user_{0}/{1}'.format(instance.userID, filename)
 
 
-class Userinfo(models.Model):
+class UserInfo(models.Model):
     gender = (
         ('male', "男"),
         ('female', "女"),
