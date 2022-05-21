@@ -138,6 +138,6 @@ def complaintvideo(request):
         complainteduser = video.videoUpUser
         AuditRecord.objects.create(auditVideo=video, complainUser=complaintuser, complainedUser=complainteduser,
                                    complainReason=complainreason, adminUser=None, auditTime=None, auditResult=None)
-        return JsonResponse({'error': 5090, 'msg': "投诉成功"})
+        return JsonResponse({'error': 5080, 'msg': "投诉成功"})
     else:
         return JsonResponse({'error': 5081, 'msg': "请求方式错误"})
