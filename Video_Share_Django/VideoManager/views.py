@@ -52,3 +52,16 @@ def sendletter(request):
 
 @csrf_exempt  # 跨域设置
 def enterhomepage(request):
+    if request.method == 'POST':
+        entereduserid = request.POST.get('entereduserid')
+        entereduser = UserInfo.objects.get(userID=entereduserid)
+        username = entereduser.username
+        userportrait = entereduser.userPortrait
+        userinformation = entereduser.userInformation
+        usersex = entereduser.userSex
+        userbirthday = entereduser.userBirthday
+#点赞数，关注数，播放总量，粉丝数，视频信息（视频封面，视频url，视频播放量）
+        return JsonResponse({'username': username, 'userportrait': userportrait, 'userinformation': userinformation,
+                             'usersex': usersex, 'userbirthday': userbirthday, })
+    else:
+        return JsonResponse({'error': 6041, 'msg': "请求方式错误"})
