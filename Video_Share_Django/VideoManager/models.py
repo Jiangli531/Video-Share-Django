@@ -24,6 +24,11 @@ class VideoInfo(models.Model):
     videoUpTime = models.DateTimeField(auto_now_add=True)
     videoUpState = models.BooleanField(default=False)
 
+    class Meta:
+        db_table = 'videos'
+        verbose_name = '视频'
+        verbose_name_plural = verbose_name
+
 
 class AuditRecord(models.Model):
     # 审核记录
@@ -36,3 +41,8 @@ class AuditRecord(models.Model):
     auditID = models.AutoField(primary_key=True) # 审核记录ID
     complainReason = models.CharField(max_length=400) # 投诉理由
 
+    class Meta:
+        db_table = 'AuditRecord'
+        verbose_name = '审核记录'
+        verbose_name_plural = verbose_name
+        ordering = ['-auditTime']

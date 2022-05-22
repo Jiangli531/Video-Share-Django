@@ -7,6 +7,11 @@ class VideoPartition(models.Model):
     videoPartName = models.CharField(max_length=30, null=False)
     videoPartID = models.AutoField(primary_key=True, null=False)
 
+    class Meta:
+        db_table = 'VideoPartition'
+        verbose_name = '视频分区'
+        verbose_name_plural = verbose_name
+
 
 class UserLetter(models.Model):
     letterUser = models.OneToOneField(UserInfo, on_delete=models.CASCADE)
@@ -15,6 +20,12 @@ class UserLetter(models.Model):
     letterTime = models.DateTimeField(auto_now_add=True, null=False)
     letterID = models.AutoField(primary_key=True, null=False)
 
+    class Meta:
+        db_table = 'UserLetter'
+        verbose_name = '用户私信'
+        verbose_name_plural = verbose_name
+        ordering = ['-letterTime']
+
 
 class UserConnection(models.Model):
     # 用户关注表
@@ -22,4 +33,8 @@ class UserConnection(models.Model):
     followedUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE) # 被关注者
     connectID = models.AutoField(primary_key=True, null=False)
 
+    class Meta:
+        db_table = 'UserConnection'
+        verbose_name = '用户关注表'
+        verbose_name_plural = verbose_name
 
