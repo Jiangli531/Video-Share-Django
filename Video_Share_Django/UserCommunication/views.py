@@ -16,6 +16,10 @@ def followuser(request):
         user = UserInfo.objects.get(userID=userid)
         followeduser = UserInfo.objects.get(userID=followeduserid)
         UserConnection.objects.create(followerUser=user, followedUser=followeduser)
+        followeduser.FansNum = followeduser.FansNum + 1
+        followeduser.save()
+        user.ConcernsNum = user.ConcernsNum + 1
+        user.save()
         return JsonResponse({'error': 6010, 'msg': "关注成功"})
     else:
         return JsonResponse({'error': 6011, 'msg': "请求方式错误"})
@@ -29,6 +33,10 @@ def cancelfollow(request):
         user = UserInfo.objects.get(userID=userid)
         followeduser = UserInfo.objects.get(userID=followeduserid)
         UserConnection.objects.get(followerUser=user, followedUser=followeduser).delete()
+        followeduser.FansNum = followeduser.FansNum - 1
+        followeduser.save()
+        user.ConcernsNum = user.ConcernsNum - 1
+        user.save()
         return JsonResponse({'error': 6020, 'msg': "取消关注成功"})
     else:
         return JsonResponse({'error': 6021, 'msg': "请求方式错误"})
@@ -58,8 +66,12 @@ def enterhomepage(request):
         userinformation = entereduser.userInformation
         usersex = entereduser.userSex
         userbirthday = entereduser.userBirthday
-#点赞数，关注数，播放总量，粉丝数，视频信息（视频封面，视频url，视频播放量）
+        fansnum = entereduser.FansNum
+        playnum = entereduser.TotalPlayNum
+        concernsnum = entereduser.ConcernsNum
+#视频信息（视频封面，视频url，视频播放量）
         return JsonResponse({'username': username, 'userportrait': userportrait, 'userinformation': userinformation,
-                             'usersex': usersex, 'userbirthday': userbirthday, })
+                             'usersex': usersex, 'userbirthday': userbirthday, 'fansnum': fansnum, 'playnum': playnum,
+                             'concernsnum': concernsnum})
     else:
         return JsonResponse({'error': 6041, 'msg': "请求方式错误"})

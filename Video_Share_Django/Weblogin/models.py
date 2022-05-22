@@ -21,6 +21,8 @@ class UserInfo(models.Model):
     userLimit = models.BooleanField(default=False)
     userSex = models.CharField(max_length=32, choices=gender, default="男")
     userBirthday = models.DateField()
-
+    FansNum = models.IntegerField(default=0)
+    ConcernsNum = models.IntegerField(default=0)
+    TotalPlayNum = models.IntegerField(default=0)
     def __str__(self):
         return self.username
