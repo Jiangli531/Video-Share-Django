@@ -7,10 +7,10 @@ class editor:
 
 
 class email:
-    EMAIL_HOST = 'smtp.163.com'
-    EMAIL_PORT = 25
-    EMAIL_HOST_USER = 'zewantop@163.com'
-    EMAIL_HOST_PASSWORD = 'AAAAAAAAAAAA'  # 邮箱 SMTP 授权码，此处为虚拟，须修改
+    EMAIL_HOST = 'smtp.qq.com'
+    EMAIL_PORT = 465
+    EMAIL_HOST_USER = '409516522@qq.com'
+    EMAIL_HOST_PASSWORD = 'dapzwzetffprbghi'  # 邮箱 SMTP 授权码，此处为虚拟，须修改
 
 
 class db:
@@ -27,5 +27,5 @@ class host:  # 修改为django允许运行的网址
 
 
 class rootUrl:
-    WEB_FRONT = 'http://127.0.0.1:8080'  # 若部署服务器，请将 http://127.0.0.1:8080 改为您的域名或服务器IP
-    WEB_ROOT = 'http://127.0.0.1:8080/api'  # 同上
+    WEB_FRONT = 'http://127.0.0.1:8000'  # 若部署服务器，请将 http://127.0.0.1:8080 改为您的域名或服务器IP
+    WEB_ROOT = 'http://127.0.0.1:8000/api'  # 同上

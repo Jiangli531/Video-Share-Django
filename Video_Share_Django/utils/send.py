@@ -1,20 +1,20 @@
 from django.conf import settings
-from user.models import *
+from Weblogin.models import *
 
 from utils.hash import *
 
 import datetime
+import random
 
 
 def make_confirm_string(user):  # generate confirm_code for user (username+c_time)
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     code = hash_code(user.username, now)
-    ConfirmString.objects.create(code=code, user=user,)
+    ConfirmString.objects.create(code=code, user=user, )
     return code
 
 
 def send_email_confirm(email, code):
-
     from django.core.mail import EmailMultiAlternatives
 
     subject = '来自www.zewan.top的注册确认邮件'
@@ -24,11 +24,22 @@ def send_email_confirm(email, code):
 
     html_content = '''
                     <p>感谢注册<a href="{}/confirm/?code={}" target=blank>www.zewan.top</a>，\
-                    这里是网上出版系统，专注于管理出版与审核！</p>
+                    这里是短视频分享网站，在这里分享你的生活！</p>
                     <p>请点击站点链接完成注册确认！</p>
                     <p>此链接有效期为{}天！</p>
-                    '''.format(settings.WEB_FRONT, code, settings.CONFIRM_DAYS)   # url must be corrected
+                    '''.format(settings.WEB_FRONT, code, settings.CONFIRM_DAYS)  # url must be corrected
 
     msg = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, [email])
     msg.attach_alternative(html_content, "text/html")
     msg.send()
+
+
+def random_str():
+    # 用randint()
+    code = ''
+    for i in range(6):
+        n = random.randint(0, 9)
+        b = chr(random.randint(65, 90))
+        s = chr(random.randint(97, 122))
+        code += str(random.choice([n, b, s]))
+    return code
