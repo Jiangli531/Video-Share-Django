@@ -6,7 +6,7 @@ from Weblogin.models import UserInfo
 
 # Create your models here.
 def video_cover_directory_path(instance, filename):
-    # 文件上传到 MEDIA_ROOT/portrait/video_<id>/<filename>目录中
+    # 文件上传到 MEDIA_ROOT/videoCover/video_<id>/<filename>目录中
     return 'videoCover/video_{0}/{1}'.format(instance.videoID, filename)
 
 
@@ -15,7 +15,7 @@ class VideoInfo(models.Model):
     videoName = models.CharField(max_length=40)
     videoInformation = models.CharField(max_length=500, blank=True)
     videoPath = models.CharField(max_length=200)
-    videoCoverPath = models.ImageField(upload_to=video_cover_directory_path(), blank=True)
+    videoCoverPath = models.ImageField(upload_to=video_cover_directory_path, blank=True)
     videoPlayNum = models.IntegerField(default=0)
     videoLikeNum = models.IntegerField(default=0)
     videoFavorNum = models.IntegerField(default=0)
@@ -33,8 +33,8 @@ class VideoInfo(models.Model):
 class AuditRecord(models.Model):
     # 审核记录
     auditVideo = models.ForeignKey(VideoInfo, on_delete=models.CASCADE)
-    complainUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE) # 投诉的用户
-    complainedUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE) # 被投诉的用户
+    complainUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE, related_name='complain_user') # 投诉的用户
+    complainedUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE, related_name='complained_user') # 被投诉的用户
     adminUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE) # 审核人
     auditTime = models.DateTimeField(auto_now_add=True) # 审核时间
     auditResult = models.BooleanField(default=False) # 审核结果

@@ -20,9 +20,9 @@ class Favourites(models.Model):
 
 class LikeRecord(models.Model):
     likeID = models.AutoField(primary_key=True)
-    likeUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE) # 点赞用户
+    likeUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE, related_name='like_user') # 点赞用户
     likeVideo = models.ForeignKey(VideoInfo, on_delete=models.CASCADE)
-    likedUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE) # 被点赞用户
+    likedUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE, related_name='liked_user') # 被点赞用户
     likeTime = models.DateTimeField(auto_now_add=True)     # 自动添加时间
 
     class Meta:
@@ -34,8 +34,8 @@ class LikeRecord(models.Model):
 
 class VideoComment(models.Model):
     commentID = models.AutoField(primary_key=True)
-    commentUpUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE)  # 被评论用户
-    commentComUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE)  # 评论用户
+    commentUpUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE, related_name='cUp_user')  # 被评论用户
+    commentComUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE, related_name='cCom_user')  # 评论用户
     commentVideo = models.ForeignKey(VideoInfo, on_delete=models.CASCADE)
     commentContent = models.TextField(max_length=500)
     commentTime = models.DateTimeField(auto_now_add=True)
