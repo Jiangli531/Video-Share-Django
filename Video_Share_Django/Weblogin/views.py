@@ -20,7 +20,7 @@ utc = pytz.UTC
 @csrf_exempt
 def login(request):
     if request.session.get('is_login', None):
-        return JsonResponse({'error': 1020, 'msg': '已有用户登录，请先登出'})
+        return JsonResponse({'error': 4001, 'msg': '已有用户登录，请先登出'})
     if request.method == 'POST':
         login_form = LoginForm(request.POST)
 
@@ -30,20 +30,22 @@ def login(request):
             try:
                 user = UserInfo.objects.get(useremail=email)
             except:
-                return JsonResponse({'error': 1021, 'msg': '邮箱未注册'})
+                return JsonResponse({'error': 4002, 'msg': '邮箱未注册'})
             if hash_code(password) == user.userpassword:
                 # 如果该用户未在邮箱中验证，则不允许登录
                 if not user.has_confirmed:
-                    return JsonResponse({'error': 1022, 'msg': '用户未验证，请先进行邮箱验证'})
+                    return JsonResponse({'error': 4004, 'msg': '用户未验证，请先进行邮箱验证'})
 
                 request.session['is_login'] = True
                 request.session['email'] = email
                 request.session['username'] = user.username
                 request.session['id'] = user.userID
                 return JsonResponse({'error': 0, 'msg': '登录成功'})
+            else:
+                return JsonResponse({'error': 4003,'msg': '密码错误'})
         else:
-            return JsonResponse({'error': 1021, 'msg': '表单信息验证失败'})
-    return JsonResponse({'error': 1023, 'msg': '请求方式错误'})
+            return JsonResponse({'error': 3001, 'msg': '表单信息验证失败'})
+    return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
 
 
 @csrf_exempt
@@ -60,18 +62,18 @@ def register(request):
 
             repeated_name = UserInfo.objects.filter(username=username)
             if repeated_name.exists():
-                return JsonResponse({'error': 1010, 'msg': '用户名已存在'})
+                return JsonResponse({'error': 4001, 'msg': '用户名已存在'})
 
             repeated_email = UserInfo.objects.filter(useremail=email)
             if repeated_email.exists():
-                return JsonResponse({'error': 1011, 'msg': '邮箱已存在'})
+                return JsonResponse({'error': 4002, 'msg': '邮箱已存在'})
 
             # 检测两次密码是否一致
             if password1 != password2:
-                return JsonResponse({'error': 1012, 'msg': '两次输入的密码不一致'})
+                return JsonResponse({'error': 4004, 'msg': '两次输入的密码不一致'})
             # 检测密码不符合规范：8-18，英文字母+数字
             if not re.match('^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,18}$', password1):
-                return JsonResponse({'error': 1013, 'msg': '密码不符合规范'})
+                return JsonResponse({'error': 4003, 'msg': '密码不符合规范'})
 
             # 成功
             new_user = UserInfo()
@@ -88,20 +90,20 @@ def register(request):
                 send_email_confirm(email, code)
             except:
                 new_user.delete()
-                return JsonResponse({'error': 1014, 'msg': '邮件发送失败'})
+                return JsonResponse({'error': 4005, 'msg': '邮件发送失败'})
 
             return JsonResponse({'error': 0, 'msg': '注册成功'})
 
         else:
-            return JsonResponse({'error': 1015, 'msg': '表单信息验证失败'})
+            return JsonResponse({'error': 3001, 'msg': '表单信息验证失败'})
 
-    return JsonResponse({'error': 1016, 'msg': '请求方式错误'})
+    return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
 
 
 @csrf_exempt
 def logout(request):
     if not request.session.get('is_login', None):
-        return JsonResponse({'error': 1031, 'msg': '未查询到登录信息'})
+        return JsonResponse({'error': 4001, 'msg': '未查询到登录信息'})
 
     request.session.flush()
     return JsonResponse({'error': 0, 'msg': '登出成功'})
@@ -114,22 +116,23 @@ def user_confirm(request):
         try:
             confirm = ConfirmString.objects.get(code=code)
         except:
-            return JsonResponse({'error': 1041, 'msg': '校验码不存在,确认失败'})
+            return JsonResponse({'error': 4001, 'msg': '校验码不存在,确认失败'})
 
         c_time = confirm.c_time.replace(tzinfo=pytz.UTC)
         now = datetime.datetime.now().replace(tzinfo=pytz.UTC)
         if now > c_time + datetime.timedelta(settings.CONFIRM_DAYS):
             confirm.user.delete()
-            return JsonResponse({'error': 1042, 'msg': '验证链接已过期'})
+            return JsonResponse({'error': 4002, 'msg': '验证链接已过期'})
         else:
             confirm.user.has_confirmed = True
             confirm.user.save()
             confirm.delete()
             return JsonResponse({'error': 0, 'msg': '认证成功'})
 
-    return JsonResponse({'error': 1043, 'msg': '请求方式错误'})
+    return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
 
 
+@csrf_exempt
 def forget_pwd(request):
     """ 找回密码 """
     if request.method == 'POST':
@@ -148,10 +151,13 @@ def forget_pwd(request):
                     msg = "验证码已发送，请查收邮件"
                     return JsonResponse({'error': 0, 'msg': msg})
                 else:
-                    return JsonResponse({'error': 1050, 'msg': '邮件发送失败'})
+                    return JsonResponse({'error': 4001, 'msg': '邮件发送失败'})
             else:
-                return JsonResponse({'error': 1050, 'msg': '邮箱还未注册，请前往注册！'})
-    return JsonResponse({'error': 1051, 'msg': '请求方式错误'})
+                return JsonResponse({'error': 4002, 'msg': '邮箱还未注册，请前往注册！'})
+        else:
+            return JsonResponse({'error': 3001, 'msg': '表单验证失败'})
+    else:
+        return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
 
 
 @csrf_exempt
@@ -163,11 +169,11 @@ def update_pwd(request):
         code = request.POST.get("code")  # 获取传递过来的验证码
         if code == request.session["code"]:
             if not re.match('^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,18}$', password):
-                return JsonResponse({'error': 1013, 'msg': '密码不符合规范'})
+                return JsonResponse({'error': 4001, 'msg': '密码不符合规范'})
             user.userpassword = hash_code(password)
             user.save()
             del request.session["code"]  # 删除session
             msg = "密码已重置"
             return JsonResponse({'error': 0, 'msg': msg})
-        return JsonResponse({'error': 1052, 'msg': '验证码错误'})
-    return JsonResponse({'error': 1051, 'msg': '请求方式错误'})
+        return JsonResponse({'error': 4002, 'msg': '验证码错误'})
+    return JsonResponse({'error': 2001, 'msg': '请求方式错误'})

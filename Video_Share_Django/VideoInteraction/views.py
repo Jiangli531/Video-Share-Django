@@ -22,9 +22,9 @@ def like(request):
         LikeRecord.objects.create(likeUser=likeuser, likedUser=likeduser, likeVideo=video)
         video.videoLikeNum = video.videoLikeNum + 1
         video.save()
-        return JsonResponse({'error': 5010, 'msg': "点赞成功"})
+        return JsonResponse({'error': 0, 'msg': "点赞成功"})
     else:
-        return JsonResponse({'error': 5011, 'msg': "请求方式错误"})
+        return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
 
 
 @csrf_exempt  # 跨域设置
@@ -38,9 +38,9 @@ def cancellike(request):
         LikeRecord.objects.get(likeUser=likeuser, likedUser=likeduser, likeVideo=video).delete()
         video.videoLikeNum = video.videoLikeNum - 1
         video.save()
-        return JsonResponse({'error': 5020, 'msg': "取消点赞成功"})
+        return JsonResponse({'error': 0, 'msg': "取消点赞成功"})
     else:
-        return JsonResponse({'error': 5021, 'msg': "请求方式错误"})
+        return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
 
 
 @csrf_exempt  # 跨域设置
@@ -53,9 +53,9 @@ def favourites(request):
         Favourites.objects.create(favorUser=user, favorVideo=video)
         video.videoFavorNum = video.videoFavorNum + 1
         video.save()
-        return JsonResponse({'error': 5030, 'msg': "收藏成功"})
+        return JsonResponse({'error': 0, 'msg': "收藏成功"})
     else:
-        return JsonResponse({'error': 5031, 'msg': "请求方式错误"})
+        return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
 
 
 @csrf_exempt  # 跨域设置
@@ -68,9 +68,9 @@ def cancalfavourites(request):
         Favourites.objects.get(favorUser=user, favorVideo=video).delete()
         video.videoFavorNum = video.videoFavorNum - 1
         video.save()
-        return JsonResponse({'error': 5040, 'msg': "取消收藏成功"})
+        return JsonResponse({'error': 0, 'msg': "取消收藏成功"})
     else:
-        return JsonResponse({'error': 5041, 'msg': "请求方式错误"})
+        return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
 
 
 @csrf_exempt  # 跨域设置
@@ -85,9 +85,9 @@ def comment(request):
         commentteduser = video.videoUpUser
         VideoComment.objects.create(commentUpUser=commentteduser, commentComUser=user, commentVideo=video,
                                     commentContent=comment, parentComment=fathercomment)
-        return JsonResponse({'error': 5050, 'msg': "评论成功"})
+        return JsonResponse({'error': 0, 'msg': "评论成功"})
     else:
-        return JsonResponse({'error': 5051, 'msg': "请求方式错误"})
+        return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
 
 
 @csrf_exempt  # 跨域设置
@@ -102,9 +102,9 @@ def cancelcomment(request):
         commentteduser = video.videoUpUser
         VideoComment.objects.get(commentUpUser=commentteduser, commentComUser=user, commentVideo=video,
                                     commentContent=comment, parentComment=fathercomment).delete()
-        return JsonResponse({'error': 5060, 'msg': "取消评论成功"})
+        return JsonResponse({'error': 0, 'msg': "取消评论成功"})
     else:
-        return JsonResponse({'error': 5061, 'msg': "请求方式错误"})
+        return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
 
 
 @csrf_exempt  # 跨域设置
@@ -122,9 +122,9 @@ def editcomment(request):
                                     commentContent=comment, parentComment=fathercomment)
         precomment.commentContent = newcomment
         precomment.save()
-        return JsonResponse({'error': 5070, 'msg': "编辑成功"})
+        return JsonResponse({'error': 0, 'msg': "编辑成功"})
     else:
-        return JsonResponse({'error': 5071, 'msg': "请求方式错误"})
+        return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
 
 
 @csrf_exempt  # 跨域设置
@@ -138,6 +138,6 @@ def complaintvideo(request):
         complainteduser = video.videoUpUser
         AuditRecord.objects.create(auditVideo=video, complainUser=complaintuser, complainedUser=complainteduser,
                                    complainReason=complainreason, adminUser=None, auditTime=None, auditResult=None)
-        return JsonResponse({'error': 5080, 'msg': "投诉成功"})
+        return JsonResponse({'error': 0, 'msg': "投诉成功"})
     else:
-        return JsonResponse({'error': 5081, 'msg': "请求方式错误"})
+        return JsonResponse({'error': 2001, 'msg': "请求方式错误"})

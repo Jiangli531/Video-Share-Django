@@ -20,9 +20,9 @@ def followuser(request):
         followeduser.save()
         user.ConcernsNum = user.ConcernsNum + 1
         user.save()
-        return JsonResponse({'error': 6010, 'msg': "关注成功"})
+        return JsonResponse({'error': 0, 'msg': "关注成功"})
     else:
-        return JsonResponse({'error': 6011, 'msg': "请求方式错误"})
+        return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
 
 
 @csrf_exempt  # 跨域设置
@@ -37,9 +37,9 @@ def cancelfollow(request):
         followeduser.save()
         user.ConcernsNum = user.ConcernsNum - 1
         user.save()
-        return JsonResponse({'error': 6020, 'msg': "取消关注成功"})
+        return JsonResponse({'error': 0, 'msg': "取消关注成功"})
     else:
-        return JsonResponse({'error': 6021, 'msg': "请求方式错误"})
+        return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
 
 
 @csrf_exempt  # 跨域设置
@@ -51,9 +51,9 @@ def sendletter(request):
         letteruser = UserInfo.objects.get(userID=letteruserid)
         lettereduser = UserInfo.objects.get(userID=lettereduserid)
         UserLetter.objects.create(letterUser=letteruser, letteredUser=lettereduser, letterText=lettertext)
-        return JsonResponse({'error': 6030, 'msg': "私信已发送"})
+        return JsonResponse({'error': 0, 'msg': "私信已发送"})
     else:
-        return JsonResponse({'error': 6031, 'msg': "请求方式错误"})
+        return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
 
 
 @csrf_exempt  # 跨域设置
@@ -74,4 +74,4 @@ def enterhomepage(request):
                              'usersex': usersex, 'userbirthday': userbirthday, 'fansnum': fansnum, 'playnum': playnum,
                              'concernsnum': concernsnum})
     else:
-        return JsonResponse({'error': 6041, 'msg': "请求方式错误"})
+        return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
