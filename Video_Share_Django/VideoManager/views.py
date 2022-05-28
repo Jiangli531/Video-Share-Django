@@ -2,8 +2,8 @@ import re
 
 # -*- coding=utf-8
 from django.views.decorators.csrf import csrf_exempt
-from qcloud_cos import CosConfig
-from qcloud_cos import CosS3Client
+# from qcloud_cos import CosConfig
+# from qcloud_cos import CosS3Client
 import sys
 import logging
 from django.http import JsonResponse

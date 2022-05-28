@@ -22,8 +22,8 @@ class db:
     db = 'VideoShareWeb'
 
 
-class host:  # 修改为django允许运行的网址
-    allowed_host = ['localhost', '127.0.0.1']
+# class host:  # 修改为django允许运行的网址
+#     allowed_host = ['localhost', '127.0.0.1', '43.138.86.76']
 
 
 class rootUrl:
