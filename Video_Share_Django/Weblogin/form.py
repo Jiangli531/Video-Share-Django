@@ -19,4 +19,4 @@ class RegisterForm(forms.Form):
 
 # 忘记密码表单
 class ForgetPwdForm(forms.Form):
-    email = forms.EmailField(label='请输入注册邮箱地址', min_length=4, widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(label='注册邮箱地址', min_length=4, widget=forms.EmailInput(attrs={'class': 'form-control'}))
