@@ -17,7 +17,7 @@ def like(request):
         userid = request.POST.get('userid')
         videoid = request.POST.get('videoid')
         likeuser = UserInfo.objects.get(userID=userid)
-        video = VideoInfo.objects.get(videoid=videoid)
+        video = VideoInfo.objects.get(videoID=videoid)
         likeduser = video.videoUpUser
         LikeRecord.objects.create(likeUser=likeuser, likedUser=likeduser, likeVideo=video)
         video.videoLikeNum = video.videoLikeNum + 1

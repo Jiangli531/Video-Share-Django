@@ -42,7 +42,7 @@ def login(request):
                 request.session['id'] = user.userID
                 return JsonResponse({'error': 0, 'msg': '登录成功'})
             else:
-                return JsonResponse({'error': 4003,'msg': '密码错误'})
+                return JsonResponse({'error': 4003, 'msg': '密码错误'})
         else:
             return JsonResponse({'error': 3001, 'msg': '表单信息验证失败'})
     return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
