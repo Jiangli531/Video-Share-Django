@@ -63,7 +63,10 @@ class EditStatus:
 
 
 #VideoManager Part
-
+class VideoManagerStatus:
+    USER_NOT_EXISTS = '4001'  # 用户不存在
+    USER_NOT_LOGIN = '4002'  # 用户未登录
+    USER_NO_POWER = '4003'  # 用户权限不足
 
 
 #VideoInteraction Part
