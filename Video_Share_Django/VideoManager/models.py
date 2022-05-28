@@ -19,6 +19,7 @@ class VideoInfo(models.Model):
     videoPlayNum = models.IntegerField(default=0)
     videoLikeNum = models.IntegerField(default=0)
     videoFavorNum = models.IntegerField(default=0)
+    videoCommentNum = models.IntegerField(default=0)
     videoPart = models.OneToOneField(VideoPartition, on_delete=models.CASCADE)
     videoUpUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE)
     videoUpTime = models.DateTimeField(auto_now_add=True)
