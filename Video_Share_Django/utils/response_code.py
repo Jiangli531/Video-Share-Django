@@ -49,7 +49,11 @@ class PasswordUpdateStatus:   #Weblogin.update_pwd
 
 
 #Websurf Part
-
+class SearchStatus:
+    USER_NOT_EXISTS = '4001' # 用户不存在
+    VIDEO_NOT_EXISTS = '4002' # 视频不存在
+    NO_KEY_ERROR = '4003' # 检索关键词为空
+    NO_DATA_ERROR = '4004'  # 没有检索到数据
 
 
 #Webhome Part
