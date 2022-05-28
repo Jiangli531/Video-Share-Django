@@ -8,5 +8,7 @@ urlpatterns = [
     path('login/', login),
     path('register', register),
     path('logout/', logout),
-    path('confirm/', user_confirm)
+    path('confirm/', user_confirm),
+    path('forget/', forget_pwd),
+    path('update/', update_pwd),
 ]
