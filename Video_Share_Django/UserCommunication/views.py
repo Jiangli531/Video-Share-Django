@@ -1,3 +1,5 @@
+import json
+
 from django.http import JsonResponse
 from django.shortcuts import render
 
@@ -6,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from Weblogin.models import UserInfo
 from UserCommunication.models import UserConnection
 from UserCommunication.models import UserLetter
+from utils.response_code import SUCCESS
 
 
 @csrf_exempt  # 跨域设置
@@ -69,9 +72,31 @@ def enterhomepage(request):
         fansnum = entereduser.FansNum
         playnum = entereduser.TotalPlayNum
         concernsnum = entereduser.ConcernsNum
+        msg_list = []
+        msg_item = {
+            'username': username,
+            'userportrait': userportrait,
+            'userinformation': userinformation,
+            'usersex': usersex,
+            'userbirthday': userbirthday,
+            'fansnum': fansnum,
+            'playnum': playnum,
+            'concernsnum': concernsnum,
+        }
+        msg_list.append(msg_item)
+        video_list = []
+        for video in entereduser.Video.all():
+            video_item = {
+                'videotitle': video.videoTitle,
+                'videoplaynum': video.videoPlayNum,
+                'videocommentnum': video.videoCommentNum,
+                'videopublishtime': video.videoPublishTime,
+                'videopublishuser': video.videoPublishUser.username,
+            }
+            video_list.append(video_item)
+
 #视频信息（视频封面，视频url，视频播放量）
-        return JsonResponse({'username': username, 'userportrait': userportrait, 'userinformation': userinformation,
-                             'usersex': usersex, 'userbirthday': userbirthday, 'fansnum': fansnum, 'playnum': playnum,
-                             'concernsnum': concernsnum})
+        return JsonResponse({'error': SUCCESS, 'msg_list': json.dumps(msg_list, ensure_ascii=False),
+                             'video_list': json.dumps(video_list, ensure_ascii=False)})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})

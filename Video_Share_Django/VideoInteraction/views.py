@@ -78,7 +78,7 @@ def comment(request):
     if request.method == 'POST':
         userid = request.POST.get('userid')
         videoid = request.POST.get('videoid')
-        comment = request.POST.get('commit')
+        comment = request.POST.get('comment')
         fathercomment = request.POST.get('fathercomm')
         user = UserInfo.objects.get(userID=userid)
         video = VideoInfo.objects.get(videoid=videoid)
@@ -86,6 +86,7 @@ def comment(request):
         VideoComment.objects.create(commentUpUser=commentteduser, commentComUser=user, commentVideo=video,
                                     commentContent=comment, parentComment=fathercomment)
         video.videoCommentNum = video.videoCommentNum + 1
+        video.save()
         return JsonResponse({'error': 0, 'msg': "评论成功"})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
@@ -96,7 +97,7 @@ def cancelcomment(request):
     if request.method == 'POST':
         userid = request.POST.get('userid')
         videoid = request.POST.get('videoid')
-        comment = request.POST.get('commit')
+        comment = request.POST.get('comment')
         fathercomment = request.POST.get('fathercomm')
         user = UserInfo.objects.get(userID=userid)
         video = VideoInfo.objects.get(videoid=videoid)
@@ -104,6 +105,7 @@ def cancelcomment(request):
         VideoComment.objects.get(commentUpUser=commentteduser, commentComUser=user, commentVideo=video,
                                     commentContent=comment, parentComment=fathercomment).delete()
         video.videoCommentNum = video.videoCommentNum - 1
+        video.save()
         return JsonResponse({'error': 0, 'msg': "取消评论成功"})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
@@ -114,7 +116,7 @@ def editcomment(request):
     if request.method == 'POST':
         userid = request.POST.get('userid')
         videoid = request.POST.get('videoid')
-        comment = request.POST.get('commit')
+        comment = request.POST.get('comment')
         fathercomment = request.POST.get('fathercomm')
         newcomment = request.POST.get('newcomment')
         user = UserInfo.objects.get(userID=userid)
