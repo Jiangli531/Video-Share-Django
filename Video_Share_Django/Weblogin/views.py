@@ -40,7 +40,7 @@ def login(request):
                 request.session['email'] = email
                 request.session['username'] = user.username
                 request.session['id'] = user.userID
-                return JsonResponse({'error': 0, 'msg': '登录成功'})
+                return JsonResponse({'error': 0, 'msg': '登录成功', 'userID': user.userID})
             else:
                 return JsonResponse({'error': 4003, 'msg': '密码错误'})
         else:
@@ -92,7 +92,7 @@ def register(request):
                 new_user.delete()
                 return JsonResponse({'error': 4005, 'msg': '邮件发送失败'})
 
-            return JsonResponse({'error': 0, 'msg': '注册成功'})
+            return JsonResponse({'error': 0, 'msg': '注册成功。请去邮箱验证'})
 
         else:
             return JsonResponse({'error': 3001, 'msg': '表单信息验证失败'})
@@ -111,7 +111,6 @@ def logout(request):
 
 @csrf_exempt
 def user_confirm(request):
-    print("111")
     if request.method == 'POST':
         code = request.POST.get('code')  # get code from url (?code=..)
         try:

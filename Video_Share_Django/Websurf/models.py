@@ -11,7 +11,8 @@ class BrowseRecord(models.Model):
     browseUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE)
     browseTime = models.DateTimeField(auto_now_add=True)
     browseDuration = models.IntegerField(default=0) #单位秒
-    browseVideoPartition = models.ForeignKey(VideoPartition, on_delete=models.CASCADE)
+    # browseVideoPartition = models.ForeignKey(VideoPartition, on_delete=models.CASCADE)
+    browseVideoPartition = models.CharField(max_length=128)
     browseID = models.AutoField(primary_key=True)
 
     class Meta:

@@ -31,12 +31,11 @@ def uploadvideo(request):
         if UserInfo.objects.filter(userID=uploaderid).exists():
             user = UserInfo.objects.get(userID=uploaderid)
             if request.session.get('is_login', None):
-                VideoInfo.objects.create(videoPath=videopath, videoTitle=videotitle, videoCoverPath=videocoverpath,
-                                         videoPart=videopart, videoInformation=videodesc, videoUpUser=user,
-                                         videoUpTime=videouptime)
+                VideoInfo.objects.create(videoPath=videopath, videoName=videotitle, videoCoverPath=videocoverpath,
+                                         videoPart=videopart, videoInformation=videodesc, videoUpUser=user)
                 return JsonResponse({'error': SUCCESS, 'msg': '上传成功'})
             else:
-                   return JsonResponse({'error': 4002, 'msg': '用户未登录'})
+                return JsonResponse({'error': 4002, 'msg': '用户未登录'})
         else:
             return JsonResponse({'error': 4001, 'msg': '用户不存在'})
     else:
@@ -48,11 +47,11 @@ def deletevideo(request):
     if request.method == 'POST':
         userid = request.POST.get('userID')
         videoid = request.POST.get('videoID')
-        if UserInfo.objects.filter(userID=userid).exists():
+        if UserInfo.objects.filter(userID=userid).exists() and VideoInfo.objects.filter(videoID=videoid).exists():
             user = UserInfo.objects.get(userID=userid)
             video = VideoInfo.objects.get(videoID=videoid)
             if request.session.get('is_login', None):
-                if(video.videoUpUser == user):
+                if video.videoUpUser.userID == user.userID or user.userLimit:
                     VideoInfo.objects.get(videoID=videoid).delete()
                     return JsonResponse({'error': SUCCESS, 'msg': '删除成功'})
                 else:
@@ -60,7 +59,7 @@ def deletevideo(request):
             else:
                 return JsonResponse({'error': 4002, 'msg': '用户未登录'})
         else:
-            return JsonResponse({'error': 4001, 'msg': '用户不存在'})
+            return JsonResponse({'error': 4001, 'msg': '用户不存在或视频不存在'})
     else:
         return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
 
@@ -76,11 +75,11 @@ def auditvideo(request):
                 administrator = UserInfo.objects.get(userID=adminid)
                 if administrator.userLimit == 1:
                     result = request.POST.get('AuditResult')
-                    audit.auditTime = request.POST.get('AuditTime')
+                    # audit.auditTime = request.POST.get('AuditTime')
                     audit.auditResult = result
                     audit.auditUser = administrator
                     audit.save()
-                    if result == 1:
+                    if not result:
                         audit.auditVideo.videoUpState = False
                         audit.auditVideo.save()
                         return JsonResponse({'error': SUCCESS, 'msg': '审核成功'})
@@ -89,13 +88,13 @@ def auditvideo(request):
             else:
                 return JsonResponse({'error': 4002, 'msg': '用户未登录'})
         else:
-            return JsonResponse({'error': 4001, 'msg': '视频不存在'})
+            return JsonResponse({'error': 4001, 'msg': '审核记录不存在'})
     else:
         return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
 
 
 @csrf_exempt  # 跨域设置
-def getvideoByID(request):
+def getVideoByID(request):
     if request.method == 'POST':
         videoid = request.POST.get('videoID')
         if VideoInfo.objects.filter(videoID=videoid).exists():
@@ -103,17 +102,17 @@ def getvideoByID(request):
             videoSrc = video.videoPath
             videoDesc = video.videoInformation
             upAvatar = video.videoUpUser.userPortrait
-            upName = video.videoUpUser.userName
+            upName = video.videoUpUser.username
             upDesc = video.videoUpUser.userInformation
             uploadDate = video.videoUpTime
-            videoTitle = video.videoTitle
+            videoTitle = video.videoName
             comment_list = []
             for comment in VideoComment.objects.filter(commentVideo=video):
                 commentuser = comment.commentComUser
                 user_item = {
                     'id': commentuser.userID,
                     'nickname': commentuser.username,
-                    'avatar': commentuser.userPortrait,
+                    'avatar': str(commentuser.userPortrait),
                 }
                 comment_item = {
                     'id': comment.commentID,
@@ -123,8 +122,9 @@ def getvideoByID(request):
                 }
                 comment_list.append(comment_item)
             return JsonResponse({'error': SUCCESS, 'videoSrc': videoSrc, 'videoDesc': videoDesc,
-                                 'videoComment': json.dumps(comment_list, ensure_ascii=False), 'upAvatar': upAvatar,
-                                 'upName': upName, 'upDesc': upDesc, 'uploadDate': uploadDate, 'videoTitle': videoTitle})
+                                 'videoComment': json.dumps(comment_list, ensure_ascii=False), 'upAvatar': str(upAvatar),
+                                 'upName': upName, 'upDesc': upDesc, 'uploadDate': uploadDate,
+                                 'videoTitle': videoTitle})
         else:
             return JsonResponse({'error': 4001, 'msg': '视频不存在'})
     else:
