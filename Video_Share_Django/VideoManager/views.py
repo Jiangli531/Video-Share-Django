@@ -20,7 +20,7 @@ from utils.response_code import SUCCESS
 
 @csrf_exempt  # 跨域设置
 def uploadvideo(request):
-    if request.methods == 'POST':
+    if request.method == 'POST':
         postform = request.POST
         if postform.is_valid():
             videopath = request.POST.get('videoPath')
@@ -49,7 +49,7 @@ def uploadvideo(request):
 
 @csrf_exempt  # 跨域设置
 def deletevideo(request):
-    if request.methods == 'POST':
+    if request.method == 'POST':
         postform = request.POST
         if postform.is_valid():
             userid = request.POST.get('userID')
@@ -75,7 +75,7 @@ def deletevideo(request):
 
 @csrf_exempt  # 跨域设置
 def auditvideo(request):
-    if request.methods == 'POST':
+    if request.method == 'POST':
         postform = request.POST
         if postform.is_valid():
             auditid = request.POST.get('AuditID')
@@ -108,7 +108,7 @@ def auditvideo(request):
 
 @csrf_exempt  # 跨域设置
 def getvideoByID(request):
-    if request.methods == 'POST':
+    if request.method == 'POST':
         videoid = request.POST.get('videoID')
         if VideoInfo.objects.filter(videoID=videoid).exists():
             video = VideoInfo.objects.get(videoID=videoid)
