@@ -74,6 +74,7 @@ def enterhomepage(request):
         concernsnum = entereduser.ConcernsNum
         msg_list = []
         msg_item = {
+            'userid': entereduserid,
             'username': username,
             'userportrait': userportrait,
             'userinformation': userinformation,
@@ -87,16 +88,39 @@ def enterhomepage(request):
         video_list = []
         for video in entereduser.Video.all():
             video_item = {
+                'videoid': video.videoID,
                 'videotitle': video.videoTitle,
                 'videoplaynum': video.videoPlayNum,
                 'videocommentnum': video.videoCommentNum,
                 'videopublishtime': video.videoPublishTime,
                 'videopublishuser': video.videoPublishUser.username,
+                'videocover': video.videoCover,
             }
             video_list.append(video_item)
+        fanslist = []
+        for user in UserConnection.objects.filter(followedUser=entereduser):
+            fans_item = {
+                'userid': user.userID,
+                'username': user.username,
+                'userportrait': user.userPortrait,
+                'userinformation': user.userInformation,
+            }
+            fanslist.append(user)
 
-#视频信息（视频封面，视频url，视频播放量）
+        concernslist = []
+        for user in UserConnection.objects.filter(followerUser=entereduser):
+            concerns_item = {
+                'userid': user.userID,
+                'username': user.username,
+                'userportrait': user.userPortrait,
+                'userinformation': user.userInformation,
+            }
+            concernslist.append(user)
+
         return JsonResponse({'error': SUCCESS, 'msg_list': json.dumps(msg_list, ensure_ascii=False),
-                             'video_list': json.dumps(video_list, ensure_ascii=False)})
+                             'video_list': json.dumps(video_list, ensure_ascii=False),
+                             'fanslist': json.dumps(fanslist, ensure_ascii=False),
+                             'concernslist': json.dumps(concernslist, ensure_ascii=False)})
+
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
