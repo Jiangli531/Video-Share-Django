@@ -27,7 +27,7 @@ def uploadvideo(request):
         videopart = request.POST.get('videoPart')
         videodesc = request.POST.get('videoDesc')
         uploaderid = request.POST.get('uploaderID')
-        videouptime = request.POST.get('videoUpTime')
+        # videouptime = request.POST.get('videoUpTime')
         if UserInfo.objects.filter(userID=uploaderid).exists():
             user = UserInfo.objects.get(userID=uploaderid)
             if request.session.get('is_login', None):
