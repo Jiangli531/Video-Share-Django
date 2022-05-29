@@ -120,11 +120,11 @@ def enterhomepage(request):
                 'userportrait': user.userPortrait,
                 'userinformation': user.userInformation,
             }
-            concernslist.append(user)
+            concernslist.append(concerns_item)
 
         favourlist = []
-        for videoid in Favourites.objects.filter(FavorUserID=entereduserid):
-            video = VideoInfo.objects.get(videoID=videoid)
+        for favourite in Favourites.objects.filter(favorUser=entereduser):
+            video = favourite.favorVideo
             if video.videoUpState == 1:
                 favour_item = {
                     'videoid': video.videoID,
