@@ -111,6 +111,7 @@ def logout(request):
 
 @csrf_exempt
 def user_confirm(request):
+    print("111")
     if request.method == 'POST':
         code = request.POST.get('code')  # get code from url (?code=..)
         try:
