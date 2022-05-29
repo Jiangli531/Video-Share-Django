@@ -28,8 +28,10 @@ def uploadvideo(request):
         videodesc = request.POST.get('videoDesc')
         uploaderid = request.POST.get('uploaderID')
         # videouptime = request.POST.get('videoUpTime')
+        print('上传用户ID:'+uploaderid+'\n')
         if UserInfo.objects.filter(userID=uploaderid).exists():
             user = UserInfo.objects.get(userID=uploaderid)
+            print('找到User!')
             if request.session.get('is_login', None):
                 VideoInfo.objects.create(videoPath=videopath, videoName=videotitle, videoCoverPath=videocoverpath,
                                          videoPart=videopart, videoInformation=videodesc, videoUpUser=user)
@@ -37,6 +39,7 @@ def uploadvideo(request):
             else:
                 return JsonResponse({'error': 4002, 'msg': '用户未登录'})
         else:
+            print('用户ID：'+uploaderid+'未找到!\n')
             return JsonResponse({'error': 4001, 'msg': '用户不存在'})
     else:
         return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
