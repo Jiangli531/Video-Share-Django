@@ -29,6 +29,8 @@ def uploadvideo(request):
         uploaderid = request.POST.get('uploaderID')
         # videouptime = request.POST.get('videoUpTime')
         print('上传用户ID:'+uploaderid+'\n')
+        test_list = []
+        print(request.POST)
         if UserInfo.objects.filter(userID=uploaderid).exists():
             user = UserInfo.objects.get(userID=uploaderid)
             print('找到User!')
