@@ -37,8 +37,11 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # Cors-headers config
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = SECRETS['cors_origin_whitelist']
-CORS_ALLOW_HEADERS = SECRETS['cors_allow_headers']
+CORS_ALLOW_HEADERS = ['*']
+# CORS_ALLOW_HEADERS = SECRETS['cors_allow_headers']
 # Application definition
 
 INSTALLED_APPS = [
@@ -48,13 +51,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
     'UserCommunication',
     'VideoInteraction',
     'VideoManager',
     'Webhome',
     'Weblogin',
     'Websurf',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
