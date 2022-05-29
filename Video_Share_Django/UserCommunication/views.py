@@ -9,7 +9,8 @@ from Weblogin.models import UserInfo
 from UserCommunication.models import UserConnection
 from UserCommunication.models import UserLetter
 from utils.response_code import SUCCESS
-
+from VideoInteraction.models import Favourites
+from VideoManager.models import VideoInfo
 
 @csrf_exempt  # 跨域设置
 def followuser(request):
@@ -117,10 +118,22 @@ def enterhomepage(request):
             }
             concernslist.append(user)
 
+        favourlist = []
+        for videoid in Favourites.objects.filter(FavorUserID=entereduserid):
+            video = VideoInfo.objects.get(videoID=videoid)
+            if video.videoUpState == 1:
+                favour_item = {
+                    'videoid': video.videoID,
+                    'videotitle': video.videoTitle,
+                    'videoplaynum': video.videoPlayNum,
+                    'videocommentnum': video.videoCommentNum,
+                    'videoCover': video.videoCover,
+                }
+                favourlist.append(favour_item)
         return JsonResponse({'error': SUCCESS, 'msg_list': json.dumps(msg_list, ensure_ascii=False),
                              'video_list': json.dumps(video_list, ensure_ascii=False),
                              'fanslist': json.dumps(fanslist, ensure_ascii=False),
-                             'concernslist': json.dumps(concernslist, ensure_ascii=False)})
-
+                             'concernslist': json.dumps(concernslist, ensure_ascii=False),
+                             'favourlist': json.dumps(favourlist, ensure_ascii=False)})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
