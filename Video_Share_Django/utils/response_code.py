@@ -72,5 +72,6 @@ class VideoManagerStatus:
 #VideoInteraction Part
 
 
-
 #UserCommunication Part
+class LetterStatus:
+    USER_NO_LIMIT = '4001'  # 用户权限不足

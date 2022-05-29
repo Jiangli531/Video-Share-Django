@@ -54,8 +54,11 @@ def sendletter(request):
         lettertext = request.POST.get('lettertext')
         letteruser = UserInfo.objects.get(userID=letteruserid)
         lettereduser = UserInfo.objects.get(userID=lettereduserid)
-        UserLetter.objects.create(letterUser=letteruser, letteredUser=lettereduser, letterText=lettertext)
-        return JsonResponse({'error': 0, 'msg': "私信已发送"})
+        if letteruser.userLimit == 1:
+            UserLetter.objects.create(letterUser=letteruser, letteredUser=lettereduser, letterText=lettertext)
+            return JsonResponse({'error': 0, 'msg': "私信已发送"})
+        else:
+            return JsonResponse({'error': 4001, 'msg': "该用户无权限发送私信"})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
 
