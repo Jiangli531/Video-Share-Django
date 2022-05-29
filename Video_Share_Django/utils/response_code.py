@@ -69,6 +69,9 @@ class VideoManagerStatus:
     USER_NO_POWER = '4003'  # 用户权限不足
 
 
+class GetVideoStatus:
+    VIDEO_NOT_EXISTS = '4001'  # 视频不存在
+
 #VideoInteraction Part
 
 

@@ -5,4 +5,5 @@ urlpatterns = [
     path('uploadvideo/', uploadvideo),
     path('deletevideo/', deletevideo),
     path('auditvideo/', auditvideo),
+    path('getvideoByID/', getvideoByID),
 ]

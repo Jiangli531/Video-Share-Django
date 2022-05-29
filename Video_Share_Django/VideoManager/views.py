@@ -1,3 +1,4 @@
+import json
 import re
 
 # -*- coding=utf-8
@@ -12,7 +13,7 @@ from utils import response_code
 from VideoManager.models import VideoInfo
 from Weblogin.models import UserInfo
 from VideoManager.models import AuditRecord
-
+from VideoInteraction.models import VideoComment
 # Create your views here.
 from utils.response_code import SUCCESS
 
@@ -44,9 +45,6 @@ def uploadvideo(request):
             return JsonResponse({'error': 3001, 'msg': '表单错误'})
     else:
         return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
-
-
-
 
 
 @csrf_exempt  # 跨域设置
@@ -107,3 +105,39 @@ def auditvideo(request):
     else:
         return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
 
+
+@csrf_exempt  # 跨域设置
+def getvideoByID(request):
+    if request.methods == 'POST':
+        videoid = request.POST.get('videoID')
+        if VideoInfo.objects.filter(videoID=videoid).exists():
+            video = VideoInfo.objects.get(videoID=videoid)
+            videoSrc = video.videoPath
+            videoDesc = video.videoInformation
+            upAvatar = video.videoUpUser.userPortrait
+            upName = video.videoUpUser.userName
+            upDesc = video.videoUpUser.userInformation
+            uploadDate = video.videoUpTime
+            videoTitle = video.videoTitle
+            comment_list = []
+            for comment in VideoComment.objects.filter(commentVideo=video):
+                commentuser = comment.commentComUser
+                user_item = {
+                    'id': commentuser.userID,
+                    'nickname': commentuser.username,
+                    'avatar': commentuser.userPortrait,
+                }
+                comment_item = {
+                    'id': comment.commentID,
+                    'commentUser': user_item,
+                    'content': comment.commentContent,
+                    'createDate': comment.commentTime,
+                }
+                comment_list.append(comment_item)
+            return JsonResponse({'error': SUCCESS, 'videoSrc': videoSrc, 'videoDesc': videoDesc,
+                                 'videoComment': json.dumps(comment_list, ensure_ascii=False), 'upAvatar': upAvatar,
+                                 'upName': upName, 'upDesc': upDesc, 'uploadDate': uploadDate, 'videoTitle': videoTitle})
+        else:
+            return JsonResponse({'error': 4001, 'msg': '视频不存在'})
+    else:
+        return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
