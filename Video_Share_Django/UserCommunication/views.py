@@ -11,6 +11,7 @@ from UserCommunication.models import UserLetter
 from utils.response_code import SUCCESS
 from VideoInteraction.models import Favourites
 from VideoManager.models import VideoInfo
+from Websurf.models import BrowseRecord
 
 @csrf_exempt  # 跨域设置
 def followuser(request):
@@ -96,8 +97,8 @@ def enterhomepage(request):
                 'videotitle': video.videoTitle,
                 'videoplaynum': video.videoPlayNum,
                 'videocommentnum': video.videoCommentNum,
-                'videopublishtime': video.videoPublishTime,
-                'videopublishuser': video.videoPublishUser.username,
+                'videouptime': video.videoUpTime,
+                'videoupuser': video.videoUpUser.username,
                 'videocover': video.videoCover,
             }
             video_list.append(video_item)
@@ -130,13 +131,37 @@ def enterhomepage(request):
                     'videotitle': video.videoTitle,
                     'videoplaynum': video.videoPlayNum,
                     'videocommentnum': video.videoCommentNum,
-                    'videoCover': video.videoCover,
+                    'videocover': video.videoCover,
+                    'videouptime': video.videoUpTime,
+                    'videoupuser': video.videoUpUser.username,
                 }
                 favourlist.append(favour_item)
+
+        letterlist = []
+        for letter in UserLetter.objects.filter(letteredUser=entereduser):
+            letter_item = {
+                'letteruser': letter.letterUser.username,
+                'lettertext': letter.letterText,
+                'lettertime': letter.letterTime,
+            }
+            letterlist.append(letter_item)
+
+        browselist = []
+        for browse in BrowseRecord.objects.filter(BrowseUser=entereduser):
+            browse_item = {
+                'browsetime': browse.BrowseTime,
+                'browsevideotitle': browse.BrowseVideo.videoTitle,
+                'browsevideouser': browse.BrowseVideo.videoUpUser.username,
+                'browsevideocover': browse.BrowseVideo.videoCover,
+            }
+            browselist.append(browse_item)
+
         return JsonResponse({'error': SUCCESS, 'msg_list': json.dumps(msg_list, ensure_ascii=False),
                              'video_list': json.dumps(video_list, ensure_ascii=False),
                              'fanslist': json.dumps(fanslist, ensure_ascii=False),
                              'concernslist': json.dumps(concernslist, ensure_ascii=False),
-                             'favourlist': json.dumps(favourlist, ensure_ascii=False)})
+                             'favourlist': json.dumps(favourlist, ensure_ascii=False),
+                             'letterlist': json.dumps(letterlist, ensure_ascii=False),
+                             'browselist': json.dumps(browselist, ensure_ascii=False)})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
