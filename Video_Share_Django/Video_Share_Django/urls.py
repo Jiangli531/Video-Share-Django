@@ -20,7 +20,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/Webhome/', include(('Webhome.urls', 'Webhome'), namespace="Webhome")),
     path('api/Weblogin/', include(('Weblogin.urls', 'Weblogin'), namespace="Weblogin")),
-    path('api/Webshare/', include(('Websurf.urls', 'Websurf'), namespace="Webshare")),
+    path('api/Websurf/', include(('Websurf.urls', 'Websurf'), namespace="Webshare")),
     path('api/VideoManager/', include(('VideoManager.urls', 'VideoManager'), namespace="VideoManager")),
     path('api/UserCommunication/', include(('UserCommunication.urls', 'UserCommunication'), namespace="UserCommunication")),
     path('api/VideoInteraction/', include(('VideoInteraction.urls', 'VideoInteraction'), namespace="VideoInteraction")),
