@@ -3,6 +3,6 @@ from .views import *
 
 urlpatterns = [
     path('uploadvideo/', uploadvideo),
-    #path('deletevideo', deletevideo),
+    path('deletevideo/', deletevideo),
     #path('auditvideo', auditvideo),
 ]
