@@ -27,7 +27,7 @@ def userinfo_edit(request):
                 try:
                     user = UserInfo.objects.get(userID=user_id)
                 except:
-                    return JsonResponse({'status_code': EditStatus.USER_NOT_EXIST, 'msg': '用户不存在'})
+                    return JsonResponse({'error': EditStatus.USER_NOT_EXIST, 'msg': '用户不存在'})
 
                 user.username = username
                 user.userInformation = userInformation
@@ -35,12 +35,12 @@ def userinfo_edit(request):
                 user.userBirthday = userBirthday
                 user.save()
 
-                return JsonResponse({'status_code': SUCCESS, 'msg': '修改成功'})
+                return JsonResponse({'error': SUCCESS, 'msg': '修改成功'})
 
             else:
-                return JsonResponse({'status_code': EditStatus.USER_NOT_LOGIN, 'msg': '用户未登录'})
+                return JsonResponse({'error': EditStatus.USER_NOT_LOGIN, 'msg': '用户未登录'})
 
         else:
-            return JsonResponse({'status_code': FORM_ERROR})
+            return JsonResponse({'error': FORM_ERROR})
 
-    return JsonResponse({'status_code': DEFAULT})
+    return JsonResponse({'error': DEFAULT})

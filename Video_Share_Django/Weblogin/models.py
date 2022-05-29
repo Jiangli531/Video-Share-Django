@@ -20,7 +20,7 @@ class UserInfo(models.Model):
     userPortrait = models.ImageField(upload_to=user_portrait_directory_path, blank=True)
     userLimit = models.BooleanField(default=False)
     userSex = models.CharField(max_length=32, choices=gender, default="男")
-    userBirthday = models.DateField()
+    userBirthday = models.DateField(null=True, blank=True)
     FansNum = models.IntegerField(default=0)
     ConcernsNum = models.IntegerField(default=0)
     TotalPlayNum = models.IntegerField(default=0)

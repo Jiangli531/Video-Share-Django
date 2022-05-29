@@ -102,7 +102,7 @@ def enterhomepage(request):
             }
             video_list.append(video_item)
         fanslist = []
-        for user in UserConnection.objects.filter(followedUser=entereduser):
+        for user in list(UserConnection.objects.filter(followedUser=entereduser)):
             fans_item = {
                 'userid': user.userID,
                 'username': user.username,
@@ -112,7 +112,7 @@ def enterhomepage(request):
             fanslist.append(user)
 
         concernslist = []
-        for user in UserConnection.objects.filter(followerUser=entereduser):
+        for user in list(UserConnection.objects.filter(followerUser=entereduser)):
             concerns_item = {
                 'userid': user.userID,
                 'username': user.username,
