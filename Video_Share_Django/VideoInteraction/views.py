@@ -79,12 +79,11 @@ def comment(request):
         userid = request.POST.get('userid')
         videoid = request.POST.get('videoid')
         comment = request.POST.get('comment')
-        fathercomment = request.POST.get('fathercomm')
         user = UserInfo.objects.get(userID=userid)
         video = VideoInfo.objects.get(videoid=videoid)
         commentteduser = video.videoUpUser
         VideoComment.objects.create(commentUpUser=commentteduser, commentComUser=user, commentVideo=video,
-                                    commentContent=comment, parentComment=fathercomment)
+                                    commentContent=comment)
         video.videoCommentNum = video.videoCommentNum + 1
         video.save()
         return JsonResponse({'error': 0, 'msg': "评论成功"})
