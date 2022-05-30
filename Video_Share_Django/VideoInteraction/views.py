@@ -33,7 +33,7 @@ def cancellike(request):
         userid = request.POST.get('userid')
         videoid = request.POST.get('videoid')
         likeuser = UserInfo.objects.get(userID=userid)
-        video = VideoInfo.objects.get(videoid=videoid)
+        video = VideoInfo.objects.get(videoID=videoid)
         likeduser = video.videoUpUser
         LikeRecord.objects.get(likeUser=likeuser, likedUser=likeduser, likeVideo=video).delete()
         video.videoLikeNum = video.videoLikeNum - 1
@@ -49,7 +49,7 @@ def favourites(request):
         userid = request.POST.get('userid')
         videoid = request.POST.get('videoid')
         user = UserInfo.objects.get(userID=userid)
-        video = VideoInfo.objects.get(videoid=videoid)
+        video = VideoInfo.objects.get(videoID=videoid)
         Favourites.objects.create(favorUser=user, favorVideo=video)
         video.videoFavorNum = video.videoFavorNum + 1
         video.save()
@@ -64,7 +64,7 @@ def cancalfavourites(request):
         userid = request.POST.get('userid')
         videoid = request.POST.get('videoid')
         user = UserInfo.objects.get(userID=userid)
-        video = VideoInfo.objects.get(videoid=videoid)
+        video = VideoInfo.objects.get(videoID=videoid)
         Favourites.objects.get(favorUser=user, favorVideo=video).delete()
         video.videoFavorNum = video.videoFavorNum - 1
         video.save()
@@ -80,7 +80,7 @@ def comment(request):
         videoid = request.POST.get('videoid')
         comment = request.POST.get('comment')
         user = UserInfo.objects.get(userID=userid)
-        video = VideoInfo.objects.get(videoid=videoid)
+        video = VideoInfo.objects.get(videoID=videoid)
         commentteduser = video.videoUpUser
         VideoComment.objects.create(commentUpUser=commentteduser, commentComUser=user, commentVideo=video,
                                     commentContent=comment)
@@ -97,12 +97,14 @@ def cancelcomment(request):
         userid = request.POST.get('userid')
         videoid = request.POST.get('videoid')
         comment = request.POST.get('comment')
-        fathercomment = request.POST.get('fathercomm')
         user = UserInfo.objects.get(userID=userid)
-        video = VideoInfo.objects.get(videoid=videoid)
+        video = VideoInfo.objects.get(videoID=videoid)
         commentteduser = video.videoUpUser
-        VideoComment.objects.get(commentUpUser=commentteduser, commentComUser=user, commentVideo=video,
-                                    commentContent=comment, parentComment=fathercomment).delete()
+        try:
+            VideoComment.objects.get(commentUpUser=commentteduser, commentComUser=user, commentVideo=video,
+                                    commentContent=comment).delete()
+        except:
+            return JsonResponse({'error': 4001, 'msg': "评论不存在"})
         video.videoCommentNum = video.videoCommentNum - 1
         video.save()
         return JsonResponse({'error': 0, 'msg': "取消评论成功"})
@@ -116,13 +118,15 @@ def editcomment(request):
         userid = request.POST.get('userid')
         videoid = request.POST.get('videoid')
         comment = request.POST.get('comment')
-        fathercomment = request.POST.get('fathercomm')
         newcomment = request.POST.get('newcomment')
         user = UserInfo.objects.get(userID=userid)
-        video = VideoInfo.objects.get(videoid=videoid)
+        video = VideoInfo.objects.get(videoID=videoid)
         commentteduser = video.videoUpUser
-        precomment = VideoComment.objects.get(commentUpUser=commentteduser, commentComUser=user, commentVideo=video,
-                                    commentContent=comment, parentComment=fathercomment)
+        try:
+            precomment = VideoComment.objects.get(commentUpUser=commentteduser, commentComUser=user, commentVideo=video,
+                                    commentContent=comment)
+        except:
+            return JsonResponse({'error': 4001, 'msg': "评论不存在"})
         precomment.commentContent = newcomment
         precomment.save()
         return JsonResponse({'error': 0, 'msg': "编辑成功"})
@@ -136,11 +140,11 @@ def complaintvideo(request):
         videoid = request.POST.get('videoid')
         complaintuserid = request.POST.get('complaintuserid')
         complainreason = request.POST.get('complainreason')
-        video = VideoInfo.objects.get(videoid=videoid)
+        video = VideoInfo.objects.get(videoID=videoid)
         complaintuser = UserInfo.objects.get(userID=complaintuserid)
         complainteduser = video.videoUpUser
         AuditRecord.objects.create(auditVideo=video, complainUser=complaintuser, complainedUser=complainteduser,
-                                   complainReason=complainreason, adminUser=None, auditTime=None, auditResult=None)
+                                   complainReason=complainreason)
         return JsonResponse({'error': 0, 'msg': "投诉成功"})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
