@@ -64,6 +64,9 @@ def deletevideo(request):
             video = VideoInfo.objects.get(videoID=videoID)
             if request.session.get('is_login', None):
                 if video.videoUpUser.userID == user.userID or user.userLimit:
+                    videoUpUser = video.videoUpUser
+                    videoUpUser.TotalLikeNum -= video.videoLikeNum  # 用户总点赞数需要更新
+                    videoUpUser.save()
                     VideoInfo.objects.get(videoID=videoID).delete()
                     return JsonResponse({'error': SUCCESS, 'msg': '删除成功'})
                 else:

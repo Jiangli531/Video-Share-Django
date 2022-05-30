@@ -27,6 +27,7 @@ class UserInfo(models.Model):
     userBirthday = models.DateField(null=True, blank=True)
     FansNum = models.IntegerField(default=0)
     ConcernsNum = models.IntegerField(default=0)
+    TotalLikeNum = models.IntegerField(default=0)
     TotalPlayNum = models.IntegerField(default=0)
     has_confirmed = models.BooleanField(default=False)
 

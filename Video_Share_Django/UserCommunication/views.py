@@ -80,6 +80,7 @@ def enterhomepage(request):
         fansnum = entered_user.FansNum
         playnum = entered_user.TotalPlayNum
         concernsnum = entered_user.ConcernsNum
+        likenum = entered_user.TotalLikeNum
         msg_list = []
         msg_item = {
             'userID': entered_userID,
@@ -91,6 +92,7 @@ def enterhomepage(request):
             'fansNum': fansnum,
             'playNum': playnum,
             'concernsNum': concernsnum,
+            'likeNum': likenum
         }
         msg_list.append(msg_item)
         video_list = []
