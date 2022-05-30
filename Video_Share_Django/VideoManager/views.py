@@ -20,7 +20,9 @@ from VideoManager.models import AuditRecord
 from VideoInteraction.models import VideoComment
 from UserCommunication.models import VideoPartition
 from utils.response_code import SUCCESS
-
+from VideoInteraction.models import LikeRecord
+from VideoInteraction.models import Favourites
+from UserCommunication.models import UserConnection
 # Create your views here.
 
 @csrf_exempt  # 跨域设置
@@ -107,8 +109,11 @@ def auditvideo(request):
 def getVideoByID(request):
     if request.method == 'POST':
         videoID = request.POST.get('videoID')
+        userID = request.POST.get('userID')
+        user = UserInfo.objects.get(userID=userID)
         if VideoInfo.objects.filter(videoID=videoID).exists():
             video = VideoInfo.objects.get(videoID=videoID)
+            up_user = video.videoUpUser
             videoSrc = video.videoPath
             videoDesc = video.videoInformation
             upAvatar = video.videoUpUser.userAvatar
@@ -122,6 +127,9 @@ def getVideoByID(request):
             videoFavorNum = video.videoFavorNum
             upUserFansNum = video.videoUpUser.FansNum
             VideoCover = video.videoCoverPath
+            isLiked = LikeRecord.objects.filter(likeUser=user, likeVideo=video).exists()
+            isFavored = Favourites.objects.filter(favorUser=user, favorVideo=video).exists()
+            isFollowed = UserConnection.objects.filter(followerUser=user, followedUser=up_user).exists()
             comment_list = []
             for comment in VideoComment.objects.filter(commentVideo=video):
                 commentuser = comment.commentComUser
@@ -142,7 +150,8 @@ def getVideoByID(request):
                                  'upName': upName, 'upDesc': upDesc, 'uploadDate': uploadDate,
                                  'videoTitle': videoTitle, 'videoLikeNum': videoLikeNum, 'videoPlayNum': videoPlayNum,
                                     'videoCommentNum': videoCommentNum, 'videoFavorNum': videoFavorNum,
-                                    'upUserFansNum': upUserFansNum, 'VideoCover': str(VideoCover)})
+                                    'upUserFansNum': upUserFansNum, 'VideoCover': str(VideoCover), 'isLiked': isLiked,
+                                    'isFavored': isFavored, 'isFollowed': isFollowed})
         else:
             return JsonResponse({'error': 4001, 'msg': '视频不存在'})
     else:
