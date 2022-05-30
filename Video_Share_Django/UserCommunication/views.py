@@ -68,11 +68,14 @@ def sendletter(request):
 def enterhomepage(request):
     if request.method == 'POST':
         entered_userID = request.POST.get('enteredUserID')
-        entered_user = UserInfo.objects.get(userID=entered_userID)
+        try:
+            entered_user = UserInfo.objects.get(userID=entered_userID)
+        except:
+            return JsonResponse({'error': 4001, 'msg': "该用户不存在"})
         username = entered_user.username
         userportrait = entered_user.userAvatar
         userinformation = entered_user.userInformation
-        usersex = entered_user.userSexw
+        usersex = entered_user.userSex
         userbirthday = str(entered_user.userBirthday)
         fansnum = entered_user.FansNum
         playnum = entered_user.TotalPlayNum
@@ -94,12 +97,12 @@ def enterhomepage(request):
         for video in list(VideoInfo.objects.filter(videoUpUser=entered_user)):
             video_item = {
                 'videoID': video.videoID,
-                'videoTitle': video.videoTitle,
+                'videoTitle': video.videoName,
                 'videoPlayNum': video.videoPlayNum,
                 'videoCommentNum': video.videoCommentNum,
-                'videoUpTime': str(video.videoUpTime),
+                'videoUpTime': video.videoUpTime.strftime("%Y-%m-%d %H:%M"),
                 'videoUpUser': video.videoUpUser.username,
-                'videoCover': str(video.videoCover),
+                'videoCover': str(video.videoCoverPath),
             }
             video_list.append(video_item)
         fanslist = []
@@ -128,11 +131,11 @@ def enterhomepage(request):
             if video.videoUpState == 1:
                 favour_item = {
                     'videoID': video.videoID,
-                    'videoTitle': video.videoTitle,
+                    'videoTitle': video.videoName,
                     'videoPlayNum': video.videoPlayNum,
                     'videoCommentNum': video.videoCommentNum,
-                    'videoCover': str(video.videoCover),
-                    'videoUpTime': str(video.videoUpTime),
+                    'videoCover': str(video.videoCoverPath),
+                    'videoUpTime': video.videoUpTime.strftime("%Y-%m-%d %H:%M"),
                     'videoUpUser': video.videoUpUser.username,
                 }
                 favourlist.append(favour_item)
@@ -142,17 +145,17 @@ def enterhomepage(request):
             letter_item = {
                 'letterUser': letter.letterUser.username,
                 'letterText': letter.letterText,
-                'letterTime': str(letter.letterTime),
+                'letterTime': letter.letterTime.strftime("%Y-%m-%d %H:%M"),
             }
             letterlist.append(letter_item)
 
         browselist = []
         for browse in list(BrowseRecord.objects.filter(browseUser=entered_user)):
             browse_item = {
-                'browseTime': str(browse.BrowseTime),
-                'browseVideoTitle': browse.BrowseVideo.videoTitle,
+                'browseTime': browse.BrowseTime.strftime("%Y-%m-%d %H:%M"),
+                'browseVideoTitle': browse.BrowseVideo.videoName,
                 'browseVideoUser': browse.BrowseVideo.videoUpUser.username,
-                'browseVideoCover': str(browse.BrowseVideo.videoCover),
+                'browseVideoCover': str(browse.BrowseVideo.videoCoverPath),
             }
             browselist.append(browse_item)
 
