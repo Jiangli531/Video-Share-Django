@@ -4,6 +4,8 @@ import re
 
 # -*- coding=utf-8
 from django.db.models import Max
+from datetime import datetime
+
 from django.views.decorators.csrf import csrf_exempt
 # from qcloud_cos import CosConfig
 # from qcloud_cos import CosS3Client
@@ -114,10 +116,10 @@ def getVideoByID(request):
             up_user = video.videoUpUser
             videoSrc = video.videoPath
             videoDesc = video.videoInformation
-            upAvatar = video.videoUpUser.userPortrait
+            upAvatar = video.videoUpUser.userAvatar
             upName = video.videoUpUser.username
             upDesc = video.videoUpUser.userInformation
-            uploadDate = video.videoUpTime
+            uploadDate = video.videoUpTime.strftime('%Y-%m-%d %H:%M')
             videoTitle = video.videoName
             videoLikeNum = video.videoLikeNum
             videoPlayNum = video.videoPlayNum
@@ -133,19 +135,19 @@ def getVideoByID(request):
                 commentuser = comment.commentComUser
                 user_item = {
                     'id': commentuser.userID,
+                    'avatar': commentuser.userAvatar,
                     'nickName': commentuser.username,
-                    'avatar': str(commentuser.userPortrait),
                 }
                 comment_item = {
                     'id': comment.commentID,
                     'commentUser': user_item,
                     'content': comment.commentContent,
-                    'createDate': str(comment.commentTime),
+                    'createDate': comment.commentTime.strftime('%Y-%m-%d %H:%M'),
                 }
                 comment_list.append(comment_item)
             return JsonResponse({'error': SUCCESS, 'videoSrc': videoSrc, 'videoDesc': videoDesc,
-                                 'videoComment': json.dumps(comment_list, ensure_ascii=False), 'upAvatar': str(upAvatar),
-                                 'upName': upName, 'upDesc': upDesc, 'uploadDate': str(uploadDate),
+                                 'videoComment': json.dumps(comment_list, ensure_ascii=False), 'upAvatar': upAvatar,
+                                 'upName': upName, 'upDesc': upDesc, 'uploadDate': uploadDate,
                                  'videoTitle': videoTitle, 'videoLikeNum': videoLikeNum, 'videoPlayNum': videoPlayNum,
                                     'videoCommentNum': videoCommentNum, 'videoFavorNum': videoFavorNum,
                                     'upUserFansNum': upUserFansNum, 'VideoCover': str(VideoCover), 'isLiked': isLiked,

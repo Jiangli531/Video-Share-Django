@@ -2,6 +2,9 @@ from django.db import models
 
 
 # Create your models here.
+from utils.Global import rootUrl
+
+
 def user_portrait_directory_path(instance, filename):
     # 文件上传到 MEDIA_ROOT/portrait/user_<id>/<filename>目录中
     return 'portrait/user_{0}/{1}'.format(instance.userID, filename)
@@ -17,7 +20,8 @@ class UserInfo(models.Model):
     userpassword = models.CharField(max_length=128)
     useremail = models.EmailField(unique=True)
     userInformation = models.CharField(max_length=500, blank=True)
-    userPortrait = models.ImageField(upload_to=user_portrait_directory_path, blank=True)
+    userPortrait = models.ImageField(upload_to=user_portrait_directory_path, blank=True) #不要用这个！
+    userAvatar = models.CharField(max_length=500, default=rootUrl.IMAGE_URL) # 用户头像用这个
     userLimit = models.BooleanField(default=False)
     userSex = models.CharField(max_length=32, choices=gender, default="男")
     userBirthday = models.DateField(null=True, blank=True)
