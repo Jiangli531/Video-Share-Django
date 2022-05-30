@@ -129,12 +129,12 @@ def getVideoByID(request):
                     'id': comment.commentID,
                     'commentUser': user_item,
                     'content': comment.commentContent,
-                    'createDate': comment.commentTime,
+                    'createDate': str(comment.commentTime),
                 }
                 comment_list.append(comment_item)
             return JsonResponse({'error': SUCCESS, 'videoSrc': videoSrc, 'videoDesc': videoDesc,
                                  'videoComment': json.dumps(comment_list, ensure_ascii=False), 'upAvatar': str(upAvatar),
-                                 'upName': upName, 'upDesc': upDesc, 'uploadDate': uploadDate,
+                                 'upName': upName, 'upDesc': upDesc, 'uploadDate': str(uploadDate),
                                  'videoTitle': videoTitle, 'videoLikeNum': videoLikeNum, 'videoPlayNum': videoPlayNum,
                                     'videoCommentNum': videoCommentNum, 'videoFavorNum': videoFavorNum,
                                     'upUserFansNum': upUserFansNum, 'VideoCover': str(VideoCover)})
@@ -142,3 +142,11 @@ def getVideoByID(request):
             return JsonResponse({'error': 4001, 'msg': '视频不存在'})
     else:
         return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
+
+
+#@csrf_exempt  # 跨域设置
+#def getVideoIDByCondition(request):
+    #if request.method == 'POST':
+        #video_type = request.POST.get('Type')
+        #if video_type == 'Any':
+
