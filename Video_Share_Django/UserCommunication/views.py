@@ -18,8 +18,11 @@ def followuser(request):
     if request.method == 'POST':
         userID = request.POST.get('userID')
         followed_userID = request.POST.get('followedUserID')
-        user = UserInfo.objects.get(userID=userID)
-        followed_user = UserInfo.objects.get(userID=followed_userID)
+        try:
+            user = UserInfo.objects.get(userID=userID)
+            followed_user = UserInfo.objects.get(userID=followed_userID)
+        except:
+            return JsonResponse({'error': 4002, 'msg': "关注用户或被关注用户不存在"})
         if UserConnection.objects.filter(followerUser=user, followedUser=followed_user).exists():
             return JsonResponse({'error': 4001, 'msg': "您已经关注过了"})
         else:
@@ -38,8 +41,11 @@ def cancelfollow(request):
     if request.method == 'POST':
         userID = request.POST.get('userID')
         followed_userID = request.POST.get('followedUserID')
-        user = UserInfo.objects.get(userID=userID)
-        followed_user = UserInfo.objects.get(userID=followed_userID)
+        try:
+            user = UserInfo.objects.get(userID=userID)
+            followed_user = UserInfo.objects.get(userID=followed_userID)
+        except:
+            return JsonResponse({'error': 4002, 'msg': "关注用户或被关注用户不存在"})
         if UserConnection.objects.filter(followerUser=user, followedUser=followed_user).exists():
             UserConnection.objects.get(followerUser=user, followedUser=followed_user).delete()
             followed_user.FansNum = followed_user.FansNum - 1
@@ -59,8 +65,11 @@ def sendletter(request):
         letter_userID = request.POST.get('letterUserID')
         lettered_userID = request.POST.get('letteredUserID')
         letter_text = request.POST.get('letterText')
-        letter_user = UserInfo.objects.get(userID=letter_userID)
-        lettered_user = UserInfo.objects.get(userID=lettered_userID)
+        try:
+            letter_user = UserInfo.objects.get(userID=letter_userID)
+            lettered_user = UserInfo.objects.get(userID=lettered_userID)
+        except:
+            return JsonResponse({'error': 4002, 'msg': "发送用户或接收用户不存在"})
         if letter_user.userLimit == 1:
             UserLetter.objects.create(letterUser=letter_user, letteredUser=lettered_user, letterText=letter_text)
             return JsonResponse({'error': 0, 'msg': "私信已发送"})

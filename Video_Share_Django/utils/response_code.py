@@ -76,34 +76,51 @@ class GetVideoStatus:
 #VideoInteraction Part
 class EditCommentStatus:
     COMMENT_NOT_EXISTS = 4001  # 评论不存在
-
+    USER_NOT_EXISTS = 4002  # 用户不存在
+    VIDEO_NOT_EXISTS = 4003  # 视频不存在
 
 class CancelCommentStatus:
     COMMENT_NOT_EXISTS = 4001  # 评论不存在
+    USER_NOT_EXISTS = 4002  # 用户不存在
+    VIDEO_NOT_EXISTS = 4003  # 视频不存在
 
 class LikeStatus:
     ALREADY_LIKE = 4001  # 已经点过赞了
-
+    USER_NOT_EXISTS = 4002  # 用户不存在
+    VIDEO_NOT_EXISTS = 4003  # 视频不存在
 
 class CancelLikeStatus:
     LIKE_NOT_EXIST = 4001  # 点赞记录不存在
-
+    USER_NOT_EXISTS = 4002  # 用户不存在
+    VIDEO_NOT_EXISTS = 4003  # 视频不存在
 
 class FavouriteStatus:
     ALREADY_FAVOURITE = 4001  # 已经收藏了
+    USER_NOT_EXISTS = 4002  # 用户不存在
+    VIDEO_NOT_EXISTS = 4003  # 视频不存在
 
 class CancelFavouriteStatus:
     FAVOURITE_NOT_EXIST = 4001  # 收藏记录不存在
 
+
+class CommentStatus:
+    USER_NOT_EXISTS = 4001  # 用户不存在
+    VIDEO_NOT_EXISTS = 4002  # 视频不存在
+
+class ComplaintVideoStatus:
+    VIDEO_NOT_EXISTS = 4001  # 视频不存在
 
 #UserCommunication Part
 
 
 class LetterStatus:
     USER_NO_LIMIT = 4001  # 用户权限不足
+    USER_NOT_EXISTS = 4002  # 发送用户或接收用户不存在
 
 class FollowStatus:
     ALREADY_FOLLOW = 4001  # 已经关注了
+    USER_NOT_EXIST = 4002  # 关注用户或被关注用户不存在
 
 class CancelFollowStatus:
     FOLLOW_NOT_EXIST = 4001  # 关注记录不存在
+    USER_NOT_EXIST = 4002  # 关注用户或被关注用户不存在
