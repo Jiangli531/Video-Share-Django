@@ -72,7 +72,14 @@ class VideoManagerStatus:
 class GetVideoStatus:
     VIDEO_NOT_EXISTS = '4001'  # 视频不存在
 
+
 #VideoInteraction Part
+class EditCommentStatus:
+    COMMENT_NOT_EXISTS = '4001'  # 评论不存在
+
+
+class CancelCommentStatus:
+    COMMENT_NOT_EXISTS = '4001'  # 评论不存在
 
 
 #UserCommunication Part

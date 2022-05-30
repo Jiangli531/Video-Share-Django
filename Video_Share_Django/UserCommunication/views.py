@@ -16,13 +16,13 @@ from Websurf.models import BrowseRecord
 @csrf_exempt  # 跨域设置
 def followuser(request):
     if request.method == 'POST':
-        userid = request.POST.get('userid')
-        followeduserid = request.POST.get('followeduserid')
-        user = UserInfo.objects.get(userID=userid)
-        followeduser = UserInfo.objects.get(userID=followeduserid)
-        UserConnection.objects.create(followerUser=user, followedUser=followeduser)
-        followeduser.FansNum = followeduser.FansNum + 1
-        followeduser.save()
+        userID = request.POST.get('userID')
+        followed_userID = request.POST.get('followedUserID')
+        user = UserInfo.objects.get(userID=userID)
+        followed_user = UserInfo.objects.get(userID=followed_userID)
+        UserConnection.objects.create(followerUser=user, followedUser=followed_user)
+        followed_user.FansNum = followed_user.FansNum + 1
+        followed_user.save()
         user.ConcernsNum = user.ConcernsNum + 1
         user.save()
         return JsonResponse({'error': 0, 'msg': "关注成功"})
@@ -33,13 +33,13 @@ def followuser(request):
 @csrf_exempt  # 跨域设置
 def cancelfollow(request):
     if request.method == 'POST':
-        userid = request.POST.get('userid')
-        followeduserid = request.POST.get('followeduserid')
-        user = UserInfo.objects.get(userID=userid)
-        followeduser = UserInfo.objects.get(userID=followeduserid)
-        UserConnection.objects.get(followerUser=user, followedUser=followeduser).delete()
-        followeduser.FansNum = followeduser.FansNum - 1
-        followeduser.save()
+        userID = request.POST.get('userID')
+        followed_userID = request.POST.get('followedUserID')
+        user = UserInfo.objects.get(userID=userID)
+        followed_user = UserInfo.objects.get(userID=followed_userID)
+        UserConnection.objects.get(followerUser=user, followedUser=followed_user).delete()
+        followed_user.FansNum = followed_user.FansNum - 1
+        followed_user.save()
         user.ConcernsNum = user.ConcernsNum - 1
         user.save()
         return JsonResponse({'error': 0, 'msg': "取消关注成功"})
@@ -50,13 +50,13 @@ def cancelfollow(request):
 @csrf_exempt  # 跨域设置
 def sendletter(request):
     if request.method == 'POST':
-        letteruserid = request.POST.get('letteruserid')
-        lettereduserid = request.POST.get('lettereduserid')
-        lettertext = request.POST.get('lettertext')
-        letteruser = UserInfo.objects.get(userID=letteruserid)
-        lettereduser = UserInfo.objects.get(userID=lettereduserid)
-        if letteruser.userLimit == 1:
-            UserLetter.objects.create(letterUser=letteruser, letteredUser=lettereduser, letterText=lettertext)
+        letter_userID = request.POST.get('letterUserID')
+        lettered_userID = request.POST.get('letteredUserID')
+        letter_text = request.POST.get('letterText')
+        letter_user = UserInfo.objects.get(userID=letter_userID)
+        lettered_user = UserInfo.objects.get(userID=lettered_userID)
+        if letter_user.userLimit == 1:
+            UserLetter.objects.create(letterUser=letter_user, letteredUser=lettered_user, letterText=letter_text)
             return JsonResponse({'error': 0, 'msg': "私信已发送"})
         else:
             return JsonResponse({'error': 4001, 'msg': "该用户无权限发送私信"})
@@ -67,101 +67,101 @@ def sendletter(request):
 @csrf_exempt  # 跨域设置
 def enterhomepage(request):
     if request.method == 'POST':
-        entereduserid = request.POST.get('entereduserid')
-        entereduser = UserInfo.objects.get(userID=entereduserid)
-        username = entereduser.username
-        userportrait = entereduser.userPortrait
-        userinformation = entereduser.userInformation
-        usersex = entereduser.userSex
-        userbirthday = entereduser.userBirthday
-        fansnum = entereduser.FansNum
-        playnum = entereduser.TotalPlayNum
-        concernsnum = entereduser.ConcernsNum
+        entered_userID = request.POST.get('enteredUserID')
+        entered_user = UserInfo.objects.get(userID=entered_userID)
+        username = entered_user.username
+        userportrait = entered_user.userPortrait
+        userinformation = entered_user.userInformation
+        usersex = entered_user.userSex
+        userbirthday = entered_user.userBirthday
+        fansnum = entered_user.FansNum
+        playnum = entered_user.TotalPlayNum
+        concernsnum = entered_user.ConcernsNum
         msg_list = []
         msg_item = {
-            'userid': entereduserid,
+            'userID': entered_userID,
             'username': username,
-            'userportrait': str(userportrait),
-            'userinformation': userinformation,
-            'usersex': usersex,
-            'userbirthday': userbirthday,
-            'fansnum': fansnum,
-            'playnum': playnum,
-            'concernsnum': concernsnum,
+            'userPortrait': str(userportrait),
+            'userInformation': userinformation,
+            'userSex': usersex,
+            'userBirthday': userbirthday,
+            'fansNum': fansnum,
+            'playNum': playnum,
+            'concernsNum': concernsnum,
         }
         msg_list.append(msg_item)
         video_list = []
-        for video in list(VideoInfo.objects.filter(videoUpUser=entereduser)):
+        for video in list(VideoInfo.objects.filter(videoUpUser=entered_user)):
             video_item = {
-                'videoid': video.videoID,
-                'videotitle': video.videoTitle,
-                'videoplaynum': video.videoPlayNum,
-                'videocommentnum': video.videoCommentNum,
-                'videouptime': video.videoUpTime,
-                'videoupuser': video.videoUpUser.username,
-                'videocover': str(video.videoCover),
+                'videoID': video.videoID,
+                'videoTitle': video.videoTitle,
+                'videoPlayNum': video.videoPlayNum,
+                'videoCommentNum': video.videoCommentNum,
+                'videoUpTime': video.videoUpTime,
+                'videoUpUser': video.videoUpUser.username,
+                'videoCover': str(video.videoCover),
             }
             video_list.append(video_item)
         fanslist = []
-        for user in list(UserConnection.objects.filter(followedUser=entereduser)):
+        for user in list(UserConnection.objects.filter(followedUser=entered_user)):
             fans_item = {
-                'userid': user.userID,
+                'userID': user.userID,
                 'username': user.username,
-                'userportrait': str(user.userPortrait),
-                'userinformation': user.userInformation,
+                'userPortrait': str(user.userPortrait),
+                'userInformation': user.userInformation,
             }
             fanslist.append(user)
 
         concernslist = []
-        for user in list(UserConnection.objects.filter(followerUser=entereduser)):
+        for user in list(UserConnection.objects.filter(followerUser=entered_user)):
             concerns_item = {
-                'userid': user.userID,
+                'userID': user.userID,
                 'username': user.username,
-                'userportrait': str(user.userPortrait),
-                'userinformation': user.userInformation,
+                'userPortrait': str(user.userPortrait),
+                'userInformation': user.userInformation,
             }
             concernslist.append(concerns_item)
 
         favourlist = []
-        for favourite in list(Favourites.objects.filter(favorUser=entereduser)):
+        for favourite in list(Favourites.objects.filter(favorUser=entered_user)):
             video = favourite.favorVideo
             if video.videoUpState == 1:
                 favour_item = {
-                    'videoid': video.videoID,
-                    'videotitle': video.videoTitle,
-                    'videoplaynum': video.videoPlayNum,
-                    'videocommentnum': video.videoCommentNum,
-                    'videocover': str(video.videoCover),
-                    'videouptime': video.videoUpTime,
-                    'videoupuser': video.videoUpUser.username,
+                    'videoID': video.videoID,
+                    'videoTitle': video.videoTitle,
+                    'videoPlayNum': video.videoPlayNum,
+                    'videoCommentNum': video.videoCommentNum,
+                    'videoCover': str(video.videoCover),
+                    'videoUpTime': video.videoUpTime,
+                    'videoUpUser': video.videoUpUser.username,
                 }
                 favourlist.append(favour_item)
 
         letterlist = []
-        for letter in list(UserLetter.objects.filter(letteredUser=entereduser)):
+        for letter in list(UserLetter.objects.filter(letteredUser=entered_user)):
             letter_item = {
-                'letteruser': letter.letterUser.username,
-                'lettertext': letter.letterText,
-                'lettertime': letter.letterTime,
+                'letterUser': letter.letterUser.username,
+                'letterText': letter.letterText,
+                'letterTime': letter.letterTime,
             }
             letterlist.append(letter_item)
 
         browselist = []
-        for browse in list(BrowseRecord.objects.filter(browseUser=entereduser)):
+        for browse in list(BrowseRecord.objects.filter(browseUser=entered_user)):
             browse_item = {
-                'browsetime': browse.BrowseTime,
-                'browsevideotitle': browse.BrowseVideo.videoTitle,
-                'browsevideouser': browse.BrowseVideo.videoUpUser.username,
-                'browsevideocover': str(browse.BrowseVideo.videoCover),
+                'browseTime': browse.BrowseTime,
+                'browseVideoTitle': browse.BrowseVideo.videoTitle,
+                'browseVideoUser': browse.BrowseVideo.videoUpUser.username,
+                'browseVideoCover': str(browse.BrowseVideo.videoCover),
             }
             browselist.append(browse_item)
 
         return JsonResponse({'error': SUCCESS, 'msg_list': json.dumps(msg_list, ensure_ascii=False),
                              'video_list': json.dumps(video_list, ensure_ascii=False),
-                             'fanslist': json.dumps(fanslist, ensure_ascii=False),
-                             'concernslist': json.dumps(concernslist, ensure_ascii=False),
-                             'favourlist': json.dumps(favourlist, ensure_ascii=False),
-                             'letterlist': json.dumps(letterlist, ensure_ascii=False),
-                             'browselist': json.dumps(browselist, ensure_ascii=False)})
+                             'fans_list': json.dumps(fanslist, ensure_ascii=False),
+                             'concerns_list': json.dumps(concernslist, ensure_ascii=False),
+                             'favour_list': json.dumps(favourlist, ensure_ascii=False),
+                             'letter_list': json.dumps(letterlist, ensure_ascii=False),
+                             'browse_list': json.dumps(browselist, ensure_ascii=False)})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
