@@ -81,7 +81,7 @@ def enterhomepage(request):
         msg_item = {
             'userid': entereduserid,
             'username': username,
-            'userportrait': userportrait,
+            'userportrait': str(userportrait),
             'userinformation': userinformation,
             'usersex': usersex,
             'userbirthday': userbirthday,
@@ -91,7 +91,7 @@ def enterhomepage(request):
         }
         msg_list.append(msg_item)
         video_list = []
-        for video in entereduser.Video.all():
+        for video in list(VideoInfo.objects.filter(videoUpUser=entereduser)):
             video_item = {
                 'videoid': video.videoID,
                 'videotitle': video.videoTitle,
@@ -99,7 +99,7 @@ def enterhomepage(request):
                 'videocommentnum': video.videoCommentNum,
                 'videouptime': video.videoUpTime,
                 'videoupuser': video.videoUpUser.username,
-                'videocover': video.videoCover,
+                'videocover': str(video.videoCover),
             }
             video_list.append(video_item)
         fanslist = []
@@ -107,7 +107,7 @@ def enterhomepage(request):
             fans_item = {
                 'userid': user.userID,
                 'username': user.username,
-                'userportrait': user.userPortrait,
+                'userportrait': str(user.userPortrait),
                 'userinformation': user.userInformation,
             }
             fanslist.append(user)
@@ -117,13 +117,13 @@ def enterhomepage(request):
             concerns_item = {
                 'userid': user.userID,
                 'username': user.username,
-                'userportrait': user.userPortrait,
+                'userportrait': str(user.userPortrait),
                 'userinformation': user.userInformation,
             }
             concernslist.append(concerns_item)
 
         favourlist = []
-        for favourite in Favourites.objects.filter(favorUser=entereduser):
+        for favourite in list(Favourites.objects.filter(favorUser=entereduser)):
             video = favourite.favorVideo
             if video.videoUpState == 1:
                 favour_item = {
@@ -131,14 +131,14 @@ def enterhomepage(request):
                     'videotitle': video.videoTitle,
                     'videoplaynum': video.videoPlayNum,
                     'videocommentnum': video.videoCommentNum,
-                    'videocover': video.videoCover,
+                    'videocover': str(video.videoCover),
                     'videouptime': video.videoUpTime,
                     'videoupuser': video.videoUpUser.username,
                 }
                 favourlist.append(favour_item)
 
         letterlist = []
-        for letter in UserLetter.objects.filter(letteredUser=entereduser):
+        for letter in list(UserLetter.objects.filter(letteredUser=entereduser)):
             letter_item = {
                 'letteruser': letter.letterUser.username,
                 'lettertext': letter.letterText,
@@ -147,12 +147,12 @@ def enterhomepage(request):
             letterlist.append(letter_item)
 
         browselist = []
-        for browse in BrowseRecord.objects.filter(BrowseUser=entereduser):
+        for browse in list(BrowseRecord.objects.filter(browseUser=entereduser)):
             browse_item = {
                 'browsetime': browse.BrowseTime,
                 'browsevideotitle': browse.BrowseVideo.videoTitle,
                 'browsevideouser': browse.BrowseVideo.videoUpUser.username,
-                'browsevideocover': browse.BrowseVideo.videoCover,
+                'browsevideocover': str(browse.BrowseVideo.videoCover),
             }
             browselist.append(browse_item)
 
