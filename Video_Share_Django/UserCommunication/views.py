@@ -115,7 +115,7 @@ def enterhomepage(request):
                 'userPortrait': user.userAvatar,
                 'userInformation': user.userInformation,
             }
-            fanslist.append(user)
+            fanslist.append(fans_item)
 
         concernslist = []
         for user in list(UserConnection.objects.filter(followerUser=entered_user)):

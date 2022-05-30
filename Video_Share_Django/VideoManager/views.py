@@ -168,6 +168,7 @@ def getVideoIDByCondition(request):
         videoID_list = []
         video_part_list = []
         video_num = VideoInfo.objects.all().aggregate(Max('videoID'))
+        video_num = video_num['videoID__max']
         count = 0
         for video_part in VideoPartition.objects.all():
             part_name = video_part.videoPartName
