@@ -80,18 +80,16 @@ def register(request):
             new_user.username = username
             new_user.userpassword = hash_code(password1)  # 密码不要存明文
             new_user.useremail = email
-            new_user.save()
-
-            request.session['is_login'] = True
-            request.session['useremail'] = email
-
             code = make_confirm_string(new_user)
             try:
                 send_email_confirm(email, code)
             except:
                 new_user.delete()
-                return JsonResponse({'error': 4005, 'msg': '邮件发送失败'})
+                return JsonResponse({'error': 4005, 'msg': '邮件发送失败，请重新注册'})
+            new_user.save()
 
+            request.session['is_login'] = True
+            request.session['useremail'] = email
             return JsonResponse({'error': 0, 'msg': '注册成功。请去邮箱验证'})
 
         else:

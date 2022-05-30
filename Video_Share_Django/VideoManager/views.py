@@ -2,6 +2,8 @@ import json
 import re
 
 # -*- coding=utf-8
+from datetime import datetime
+
 from django.views.decorators.csrf import csrf_exempt
 # from qcloud_cos import CosConfig
 # from qcloud_cos import CosS3Client
@@ -109,7 +111,7 @@ def getVideoByID(request):
             upAvatar = video.videoUpUser.userPortrait
             upName = video.videoUpUser.username
             upDesc = video.videoUpUser.userInformation
-            uploadDate = video.videoUpTime
+            uploadDate = video.videoUpTime.strftime('%Y-%m-%d %H:%M')
             videoTitle = video.videoName
             comment_list = []
             for comment in VideoComment.objects.filter(commentVideo=video):
