@@ -24,10 +24,11 @@ def userinfo_edit(request):
             try:
                 user = UserInfo.objects.get(userID=userID)
             except:
-                return JsonResponse({'error': EditStatus.USER_NOT_EXISTS , 'msg': '用户不存在'})
-            repeated = UserInfo.objects.filter(username=username)
-            if repeated.exists():
-                return JsonResponse({'error': 4003, 'msg': '用户名重复'})
+                return JsonResponse({'error': EditStatus.USER_NOT_EXISTS, 'msg': '用户不存在'})
+            if user.username != username: #  要更改新的用户名，需要判断用户名是否重复
+                repeated = UserInfo.objects.filter(username=username)
+                if repeated.exists():
+                    return JsonResponse({'error': 4003, 'msg': '用户名重复'})
             user.username = username
             user.userInformation = userInformation
             user.userSex = userSex
