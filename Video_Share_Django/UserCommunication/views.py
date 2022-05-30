@@ -70,7 +70,7 @@ def enterhomepage(request):
         entered_userID = request.POST.get('enteredUserID')
         entered_user = UserInfo.objects.get(userID=entered_userID)
         username = entered_user.username
-        userportrait = entered_user.userPortrait
+        userportrait = entered_user.userAvatar
         userinformation = entered_user.userInformation
         usersex = entered_user.userSex
         userbirthday = entered_user.userBirthday
@@ -81,7 +81,7 @@ def enterhomepage(request):
         msg_item = {
             'userID': entered_userID,
             'username': username,
-            'userPortrait': str(userportrait),
+            'userPortrait': userportrait,
             'userInformation': userinformation,
             'userSex': usersex,
             'userBirthday': userbirthday,
@@ -107,7 +107,7 @@ def enterhomepage(request):
             fans_item = {
                 'userID': user.userID,
                 'username': user.username,
-                'userPortrait': str(user.userPortrait),
+                'userPortrait': user.userAvatar,
                 'userInformation': user.userInformation,
             }
             fanslist.append(user)
@@ -117,7 +117,7 @@ def enterhomepage(request):
             concerns_item = {
                 'userID': user.userID,
                 'username': user.username,
-                'userPortrait': str(user.userPortrait),
+                'userPortrait': user.userAvatar,
                 'userInformation': user.userInformation,
             }
             concernslist.append(concerns_item)

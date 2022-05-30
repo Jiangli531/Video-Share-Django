@@ -8,7 +8,7 @@ from VideoManager.models import *
 from Video_Share_Django.settings import WEB_ROOT
 from Weblogin.models import *
 from utils.response_code import *
-
+from utils.Global import *
 
 @csrf_exempt
 def search(request):
@@ -27,17 +27,18 @@ def search(request):
                         user_item = {
                             'username': user.username,
                             'userInformation': user.userInformation,
+                            'userPortrait': user.userAvatar,
                         }
-                        if user.userPortrait:
-                            user_item['userPortrait'] = WEB_ROOT + user.userPortrait.url
-                        else:
-                            user_item['userPortrait'] = WEB_ROOT + '/media/portrait/user_default/' + '1.png'
-                        user_list.append(user_item)
+                        # if user.userPortrait:
+                        #     user_item['userPortrait'] = str(user.userPortrait.url)
+                        # else:
+                        #     user_item['userPortrait'] = rootUrl.IMAGE_URL
+                        # user_list.append(user_item)
                 if video_results:
                     for video in list(video_results):
                         video_item = {
                             'videoName': video.videoName,
-                            'videoCoverPath': WEB_ROOT + video.videoCoverPath.url,
+                            'videoCoverPath': str(video.videoCoverPath),
                             'videoPlayNum': video.videoPlayNum,
                             'videoPath': video.videoPath,
                             'videoCommentNum': video.videoCommentNum,

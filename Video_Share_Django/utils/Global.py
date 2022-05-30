@@ -29,3 +29,4 @@ class db:
 class rootUrl:
     WEB_FRONT = 'http://43.138.86.76'  # 若部署服务器，请将 http://127.0.0.1:8080 改为您的域名或服务器IP
     WEB_ROOT = 'http://43.138.86.76/api'  # 同上
+    IMAGE_URL = 'https://nohesitate-1312201606.cos.ap-beijing.myqcloud.com/UserAvatar/head.jpeg'   # 默认头像

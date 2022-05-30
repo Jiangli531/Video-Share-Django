@@ -11,6 +11,7 @@ from Weblogin.form import *
 from Weblogin.models import UserInfo
 from utils.send import *
 from utils.hash import *
+from utils.Global import *
 import datetime
 import pytz
 
@@ -80,6 +81,7 @@ def register(request):
             new_user.username = username
             new_user.userpassword = hash_code(password1)  # 密码不要存明文
             new_user.useremail = email
+            new_user.userAvatar = rootUrl.IMAGE_URL
             code = make_confirm_string(new_user)
             try:
                 send_email_confirm(email, code)

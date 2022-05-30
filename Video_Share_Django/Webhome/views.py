@@ -16,31 +16,49 @@ def userinfo_edit(request):
         detail_form = DetailInfoForm(request.POST)
 
         if detail_form.is_valid():
-            username = detail_form.cleaned_data.get('username')
+            userID = detail_form.cleaned_data.get('userID')
             userInformation = detail_form.cleaned_data.get('userInformation')
             userSex = detail_form.cleaned_data.get('userSex')
             userBirthday = detail_form.cleaned_data.get('userBirthday')
+            username = detail_form.cleaned_data.get('username')
+            try:
+                user = UserInfo.objects.get(userID=userID)
+            except:
+                return JsonResponse({'error': EditStatus.USER_NOT_EXISTS , 'msg': '用户不存在'})
+            repeated = UserInfo.objects.filter(username=username)
+            if repeated.exists():
+                return JsonResponse({'error': 4003, 'msg': '用户名重复'})
+            user.username = username
+            user.userInformation = userInformation
+            user.userSex = userSex
+            user.userBirthday = userBirthday
+            user.save()
 
-            user_id = request.session.get('id')
-
-            if user_id.exists():
-                try:
-                    user = UserInfo.objects.get(userID=user_id)
-                except:
-                    return JsonResponse({'error': EditStatus.USER_NOT_EXIST, 'msg': '用户不存在'})
-
-                user.username = username
-                user.userInformation = userInformation
-                user.userSex = userSex
-                user.userBirthday = userBirthday
-                user.save()
-
-                return JsonResponse({'error': SUCCESS, 'msg': '修改成功'})
-
-            else:
-                return JsonResponse({'error': EditStatus.USER_NOT_LOGIN, 'msg': '用户未登录'})
+            return JsonResponse({'error': SUCCESS, 'msg': '修改成功'})
 
         else:
             return JsonResponse({'error': FORM_ERROR})
+
+    return JsonResponse({'error': DEFAULT})
+
+
+@csrf_exempt
+def upload_portrait(request):
+    if request.method == 'POST':
+        portrait = request.POST.get('portrait')
+        userID = request.POST.get('userID')
+
+        try:
+            user = UserInfo.objects.get(userID=userID)
+        except:
+            return JsonResponse({'error': EditStatus.USER_NOT_EXISTS, 'msg': '用户不存在'})
+        # print(portrait)
+        if portrait is None:
+            return JsonResponse({'error': 4001, 'msg': '头像为空'})
+
+        user.userAvatar = portrait
+        user.save()
+
+        return JsonResponse({'error': SUCCESS, 'msg': '修改成功'})
 
     return JsonResponse({'error': DEFAULT})
