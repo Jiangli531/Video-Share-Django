@@ -129,12 +129,12 @@ def getVideoByID(request):
             videoFavorNum = video.videoFavorNum
             upUserFansNum = video.videoUpUser.FansNum
             VideoCover = video.videoCoverPath
-            if userID:
+            try:
                 user = UserInfo.objects.get(userID=userID)
                 isLiked = LikeRecord.objects.filter(likeUser=user, likeVideo=video).exists()
                 isFavored = Favourites.objects.filter(favorUser=user, favorVideo=video).exists()
                 isFollowed = UserConnection.objects.filter(followerUser=user, followedUser=up_user).exists()
-            else:
+            except:
                 isLiked = False
                 isFavored = False
                 isFollowed = False
