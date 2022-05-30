@@ -103,7 +103,7 @@ def enterhomepage(request):
             }
             video_list.append(video_item)
         fanslist = []
-        for user in list(UserConnection.objects.filter(followedUser=entereduser)):
+        for user in list(UserConnection.objects.filter(followedUser=entered_user)):
             fans_item = {
                 'userID': user.userID,
                 'username': user.username,
@@ -113,7 +113,7 @@ def enterhomepage(request):
             fanslist.append(user)
 
         concernslist = []
-        for user in list(UserConnection.objects.filter(followerUser=entereduser)):
+        for user in list(UserConnection.objects.filter(followerUser=entered_user)):
             concerns_item = {
                 'userID': user.userID,
                 'username': user.username,
@@ -123,7 +123,7 @@ def enterhomepage(request):
             concernslist.append(concerns_item)
 
         favourlist = []
-        for favourite in list(Favourites.objects.filter(favorUser=entereduser)):
+        for favourite in list(Favourites.objects.filter(favorUser=entered_user)):
             video = favourite.favorVideo
             if video.videoUpState == 1:
                 favour_item = {
@@ -138,7 +138,7 @@ def enterhomepage(request):
                 favourlist.append(favour_item)
 
         letterlist = []
-        for letter in list(UserLetter.objects.filter(letteredUser=entereduser)):
+        for letter in list(UserLetter.objects.filter(letteredUser=entered_user)):
             letter_item = {
                 'letterUser': letter.letterUser.username,
                 'letterText': letter.letterText,
@@ -147,7 +147,7 @@ def enterhomepage(request):
             letterlist.append(letter_item)
 
         browselist = []
-        for browse in list(BrowseRecord.objects.filter(browseUser=entereduser)):
+        for browse in list(BrowseRecord.objects.filter(browseUser=entered_user)):
             browse_item = {
                 'browseTime': browse.BrowseTime,
                 'browseVideoTitle': browse.BrowseVideo.videoTitle,
