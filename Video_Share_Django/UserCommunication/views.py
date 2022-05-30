@@ -20,12 +20,15 @@ def followuser(request):
         followed_userID = request.POST.get('followedUserID')
         user = UserInfo.objects.get(userID=userID)
         followed_user = UserInfo.objects.get(userID=followed_userID)
-        UserConnection.objects.create(followerUser=user, followedUser=followed_user)
-        followed_user.FansNum = followed_user.FansNum + 1
-        followed_user.save()
-        user.ConcernsNum = user.ConcernsNum + 1
-        user.save()
-        return JsonResponse({'error': 0, 'msg': "关注成功"})
+        if UserConnection.objects.filter(followerUser=user, followedUser=followed_user).exists():
+            return JsonResponse({'error': 4001, 'msg': "您已经关注过了"})
+        else:
+            UserConnection.objects.create(followerUser=user, followedUser=followed_user)
+            followed_user.FansNum = followed_user.FansNum + 1
+            followed_user.save()
+            user.ConcernsNum = user.ConcernsNum + 1
+            user.save()
+            return JsonResponse({'error': 0, 'msg': "关注成功"})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
 
@@ -37,12 +40,15 @@ def cancelfollow(request):
         followed_userID = request.POST.get('followedUserID')
         user = UserInfo.objects.get(userID=userID)
         followed_user = UserInfo.objects.get(userID=followed_userID)
-        UserConnection.objects.get(followerUser=user, followedUser=followed_user).delete()
-        followed_user.FansNum = followed_user.FansNum - 1
-        followed_user.save()
-        user.ConcernsNum = user.ConcernsNum - 1
-        user.save()
-        return JsonResponse({'error': 0, 'msg': "取消关注成功"})
+        if UserConnection.objects.filter(followerUser=user, followedUser=followed_user).exists():
+            UserConnection.objects.get(followerUser=user, followedUser=followed_user).delete()
+            followed_user.FansNum = followed_user.FansNum - 1
+            followed_user.save()
+            user.ConcernsNum = user.ConcernsNum - 1
+            user.save()
+            return JsonResponse({'error': 0, 'msg': "取消关注成功"})
+        else:
+            return JsonResponse({'error': 4001, 'msg': "您还没有关注过"})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
 

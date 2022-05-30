@@ -19,6 +19,8 @@ def like(request):
         like_user = UserInfo.objects.get(userID=userID)
         video = VideoInfo.objects.get(videoID=videoID)
         liked_user = video.videoUpUser
+        if LikeRecord.objects.filter(likeUser=like_user, likedVideo=video).exists():
+            return JsonResponse({'error': 4001, 'msg': "已点赞"})
         LikeRecord.objects.create(likeUser=like_user, likedUser=liked_user, likeVideo=video)
         video.videoLikeNum = video.videoLikeNum + 1
         liked_user.TotalLikeNum = liked_user.TotalLikeNum + 1 # 更新用户点赞总数
@@ -37,12 +39,15 @@ def cancellike(request):
         like_user = UserInfo.objects.get(userID=userID)
         video = VideoInfo.objects.get(videoID=videoID)
         liked_user = video.videoUpUser
-        LikeRecord.objects.get(likeUser=like_user, likedUser=liked_user, likeVideo=video).delete()
-        liked_user.TotalLikeNum = liked_user.TotalLikeNum - 1 # 更新用户点赞总数
-        liked_user.save()
-        video.videoLikeNum = video.videoLikeNum - 1
-        video.save()
-        return JsonResponse({'error': 0, 'msg': "取消点赞成功"})
+        if LikeRecord.objects.filter(likeUser=like_user, likedVideo=video).exists():
+            LikeRecord.objects.get(likeUser=like_user, likedUser=liked_user, likeVideo=video).delete()
+            liked_user.TotalLikeNum = liked_user.TotalLikeNum - 1 # 更新用户点赞总数
+            liked_user.save()
+            video.videoLikeNum = video.videoLikeNum - 1
+            video.save()
+            return JsonResponse({'error': 0, 'msg': "取消点赞成功"})
+        else:
+            return JsonResponse({'error': 4001, 'msg': "还未点赞"})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
 
@@ -54,10 +59,13 @@ def favourites(request):
         videoID = request.POST.get('videoID')
         user = UserInfo.objects.get(userID=userID)
         video = VideoInfo.objects.get(videoID=videoID)
-        Favourites.objects.create(favorUser=user, favorVideo=video)
-        video.videoFavorNum = video.videoFavorNum + 1
-        video.save()
-        return JsonResponse({'error': 0, 'msg': "收藏成功"})
+        if Favourites.objects.filter(favorUser=user, favorVideo=video).exists():
+            return JsonResponse({'error': 4001, 'msg': "已收藏"})
+        else:
+            Favourites.objects.create(favorUser=user, favorVideo=video)
+            video.videoFavorNum = video.videoFavorNum + 1
+            video.save()
+            return JsonResponse({'error': 0, 'msg': "收藏成功"})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
 
@@ -69,10 +77,13 @@ def cancalfavourites(request):
         videoID = request.POST.get('videoID')
         user = UserInfo.objects.get(userID=userID)
         video = VideoInfo.objects.get(videoID=videoID)
-        Favourites.objects.get(favorUser=user, favorVideo=video).delete()
-        video.videoFavorNum = video.videoFavorNum - 1
-        video.save()
-        return JsonResponse({'error': 0, 'msg': "取消收藏成功"})
+        if Favourites.objects.filter(favorUser=user, favorVideo=video).exists():
+            Favourites.objects.get(favorUser=user, favorVideo=video).delete()
+            video.videoFavorNum = video.videoFavorNum - 1
+            video.save()
+            return JsonResponse({'error': 0, 'msg': "取消收藏成功"})
+        else:
+            return JsonResponse({'error': 4001, 'msg': "还未收藏"})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
 
