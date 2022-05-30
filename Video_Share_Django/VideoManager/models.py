@@ -23,7 +23,7 @@ class VideoInfo(models.Model):
     videoPart = models.CharField(max_length=128)
     videoUpUser = models.ForeignKey(UserInfo, on_delete=models.CASCADE)
     videoUpTime = models.DateTimeField(auto_now_add=True)
-    videoUpState = models.BooleanField(default=False)
+    videoUpState = models.BooleanField(default=True)
     videoCommentNum = models.IntegerField(default=0, blank=True)
 
     class Meta:
