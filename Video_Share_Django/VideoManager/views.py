@@ -21,27 +21,27 @@ from utils.response_code import SUCCESS
 @csrf_exempt  # 跨域设置
 def uploadvideo(request):
     if request.method == 'POST':
-        videopath = request.POST.get('videoPath')
-        videotitle = request.POST.get('videoTitle')
-        videocoverpath = request.POST.get('videoCoverPath')
-        videopart = request.POST.get('videoPart')
-        videodesc = request.POST.get('videoDesc')
-        uploaderid = request.POST.get('uploaderID')
+        video_path = request.POST.get('videoPath')
+        video_title = request.POST.get('videoTitle')
+        video_cover_path = request.POST.get('videoCoverPath')
+        video_part = request.POST.get('videoPart')
+        video_desc = request.POST.get('videoDesc')
+        uploaderID = request.POST.get('uploaderID')
         # videouptime = request.POST.get('videoUpTime')
-        print('上传用户ID:'+uploaderid+'\n')
+        print('上传用户ID:'+uploaderID+'\n')
         test_list = []
         print(request.POST)
-        if UserInfo.objects.filter(userID=uploaderid).exists():
-            user = UserInfo.objects.get(userID=uploaderid)
+        if UserInfo.objects.filter(userID=uploaderID).exists():
+            user = UserInfo.objects.get(userID=uploaderID)
             print('找到User!')
             if request.session.get('is_login', None):
-                VideoInfo.objects.create(videoPath=videopath, videoName=videotitle, videoCoverPath=videocoverpath,
-                                         videoPart=videopart, videoInformation=videodesc, videoUpUser=user)
+                VideoInfo.objects.create(videoPath=video_path, videoName=video_title, videoCoverPath=video_cover_path,
+                                         videoPart=video_part, videoInformation=video_desc, videoUpUser=user)
                 return JsonResponse({'error': SUCCESS, 'msg': '上传成功'})
             else:
                 return JsonResponse({'error': 4002, 'msg': '用户未登录'})
         else:
-            print('用户ID：'+uploaderid+'未找到!\n')
+            print('用户ID：'+uploaderID+'未找到!\n')
             return JsonResponse({'error': 4001, 'msg': '用户不存在'})
     else:
         return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
@@ -50,14 +50,14 @@ def uploadvideo(request):
 @csrf_exempt  # 跨域设置
 def deletevideo(request):
     if request.method == 'POST':
-        userid = request.POST.get('userID')
-        videoid = request.POST.get('videoID')
-        if UserInfo.objects.filter(userID=userid).exists() and VideoInfo.objects.filter(videoID=videoid).exists():
-            user = UserInfo.objects.get(userID=userid)
-            video = VideoInfo.objects.get(videoID=videoid)
+        userID = request.POST.get('userID')
+        videoID = request.POST.get('videoID')
+        if UserInfo.objects.filter(userID=userID).exists() and VideoInfo.objects.filter(videoID=videoID).exists():
+            user = UserInfo.objects.get(userID=userID)
+            video = VideoInfo.objects.get(videoID=videoID)
             if request.session.get('is_login', None):
                 if video.videoUpUser.userID == user.userID or user.userLimit:
-                    VideoInfo.objects.get(videoID=videoid).delete()
+                    VideoInfo.objects.get(videoID=videoID).delete()
                     return JsonResponse({'error': SUCCESS, 'msg': '删除成功'})
                 else:
                     return JsonResponse({'error': 4003, 'msg': '用户无权限'})
@@ -72,12 +72,12 @@ def deletevideo(request):
 @csrf_exempt  # 跨域设置
 def auditvideo(request):
     if request.method == 'POST':
-        auditid = request.POST.get('AuditID')
-        if AuditRecord.objects.filter(auditID=auditid).exists():
-            audit = AuditRecord.objects.get(auditID=auditid)
+        auditID = request.POST.get('AuditID')
+        if AuditRecord.objects.filter(auditID=auditID).exists():
+            audit = AuditRecord.objects.get(auditID=auditID)
             if request.session.get('is_login', None):
-                adminid = request.POST.get('AdministratorID')
-                administrator = UserInfo.objects.get(userID=adminid)
+                adminID = request.POST.get('AdministratorID')
+                administrator = UserInfo.objects.get(userID=adminID)
                 if administrator.userLimit == 1:
                     result = request.POST.get('AuditResult')
                     # audit.auditTime = request.POST.get('AuditTime')
@@ -101,9 +101,9 @@ def auditvideo(request):
 @csrf_exempt  # 跨域设置
 def getVideoByID(request):
     if request.method == 'POST':
-        videoid = request.POST.get('videoID')
-        if VideoInfo.objects.filter(videoID=videoid).exists():
-            video = VideoInfo.objects.get(videoID=videoid)
+        videoID = request.POST.get('videoID')
+        if VideoInfo.objects.filter(videoID=videoID).exists():
+            video = VideoInfo.objects.get(videoID=videoID)
             videoSrc = video.videoPath
             videoDesc = video.videoInformation
             upAvatar = video.videoUpUser.userPortrait
