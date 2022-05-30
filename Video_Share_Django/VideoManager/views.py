@@ -116,6 +116,7 @@ def getVideoByID(request):
             videoCommentNum = video.videoCommentNum
             videoFavorNum = video.videoFavorNum
             upUserFansNum = video.videoUpUser.FansNum
+            VideoCover = video.videoCoverPath
             comment_list = []
             for comment in VideoComment.objects.filter(commentVideo=video):
                 commentuser = comment.commentComUser
@@ -136,7 +137,7 @@ def getVideoByID(request):
                                  'upName': upName, 'upDesc': upDesc, 'uploadDate': uploadDate,
                                  'videoTitle': videoTitle, 'videoLikeNum': videoLikeNum, 'videoPlayNum': videoPlayNum,
                                     'videoCommentNum': videoCommentNum, 'videoFavorNum': videoFavorNum,
-                                    'upUserFansNum': upUserFansNum})
+                                    'upUserFansNum': upUserFansNum, 'VideoCover': str(VideoCover)})
         else:
             return JsonResponse({'error': 4001, 'msg': '视频不存在'})
     else:
