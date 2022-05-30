@@ -1,7 +1,9 @@
 import json
+import random
 import re
 
 # -*- coding=utf-8
+from django.db.models import Max
 from datetime import datetime
 
 from django.views.decorators.csrf import csrf_exempt
@@ -16,9 +18,10 @@ from VideoManager.models import VideoInfo
 from Weblogin.models import UserInfo
 from VideoManager.models import AuditRecord
 from VideoInteraction.models import VideoComment
-# Create your views here.
+from UserCommunication.models import VideoPartition
 from utils.response_code import SUCCESS
 
+# Create your views here.
 
 @csrf_exempt  # 跨域设置
 def uploadvideo(request):
@@ -124,8 +127,8 @@ def getVideoByID(request):
                 commentuser = comment.commentComUser
                 user_item = {
                     'id': commentuser.userID,
-                    'nickname': commentuser.username,
                     'avatar': commentuser.userAvatar,
+                    'nickName': commentuser.username,
                 }
                 comment_item = {
                     'id': comment.commentID,
@@ -146,9 +149,76 @@ def getVideoByID(request):
         return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
 
 
-#@csrf_exempt  # 跨域设置
-#def getVideoIDByCondition(request):
-    #if request.method == 'POST':
-        #video_type = request.POST.get('Type')
-        #if video_type == 'Any':
+@csrf_exempt  # 跨域设置
+def getVideoIDByCondition(request):
+    if request.method == 'POST':
+        video_type = request.POST.get('Type')
+        videoID_list = []
+        video_part_list = []
+        video_num = VideoInfo.objects.all().aggregate(Max('videoID'))
+        count = 0
+        for video_part in VideoPartition.objects.all():
+            part_name = video_part.videoPartName
+            video_part_list.append(part_name)
+        if video_type == 'Any':
+            num_of_video = VideoInfo.objects.filter().count()
+            if num_of_video == 0:
+                return JsonResponse({'error': 4002, 'msg': '没有符合条件的视频'})
+            else:
+                if num_of_video <= 6:
+                    for video in VideoInfo.objects.all():
+                        videoID_list.append(video.videoID)
+                else:
+                    while count < 6:
+                        found_id = random.randint(1, video_num)
+                        if found_id not in videoID_list and VideoInfo.objects.filter(videoID=found_id).exists():
+                            videoID_list.append(found_id)
+                            count += 1
+                        else:
+                            continue
+                return JsonResponse({'error': SUCCESS, 'videoID_list': videoID_list})
+        elif video_type == 'Audit':
+            num_of_video = VideoInfo.objects.filter(videoUpState=False).count()
+            if num_of_video == 0:
+                return JsonResponse({'error': 4002, 'msg': '没有符合条件的视频'})
+            else:
+                if num_of_video <= 6:
+                    for video in VideoInfo.objects.filter(videoUpState=False):
+                        videoID_list.append(video.videoID)
+                else:
+                    while count < 6:
+                        found_id = random.randint(1, video_num)
+                        try:
+                            if (found_id not in videoID_list) and (not VideoInfo.objects.get(videoID=found_id).videoUpState):
+                                videoID_list.append(found_id)
+                                count += 1
+                        except:
+                            continue
+                        else:
+                            continue
+                return JsonResponse({'error': SUCCESS, 'videoID_list': videoID_list})
+        elif video_type in video_part_list:
+            video_part_need = VideoPartition.objects.get(videoPartName=video_type)
+            num_of_video = VideoInfo.objects.filter(videoPart=video_part_need.videoPartName).count()
+            if num_of_video == 0:
+                return JsonResponse({'error': 4002, 'msg': '没有符合条件的视频'})
+            else:
+                if num_of_video <= 6:
+                    for video in VideoInfo.objects.filter(videoPart=video_part_need.videoPartName):
+                        videoID_list.append(video.videoID)
+                else:
+                    while count < 6:
+                        found_id = random.randint(1, video_num)
+                        try:
+                            if found_id not in videoID_list and \
+                                    VideoInfo.objects.get(videoID=found_id).videoPart == video_part_need.videoPartName:
+                                videoID_list.append(found_id)
+                                count += 1
+                        except:
+                            continue
+                        else:
+                            continue
+                return JsonResponse({'error': SUCCESS, 'videoID_list': videoID_list})
+        else:
+            return JsonResponse({'error': 4001, 'msg': 'Type类型错误'})
 

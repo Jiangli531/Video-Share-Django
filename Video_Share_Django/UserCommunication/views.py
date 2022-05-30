@@ -72,8 +72,8 @@ def enterhomepage(request):
         username = entered_user.username
         userportrait = entered_user.userAvatar
         userinformation = entered_user.userInformation
-        usersex = entered_user.userSex
-        userbirthday = entered_user.userBirthday
+        usersex = entered_user.userSexw
+        userbirthday = str(entered_user.userBirthday)
         fansnum = entered_user.FansNum
         playnum = entered_user.TotalPlayNum
         concernsnum = entered_user.ConcernsNum
@@ -97,7 +97,7 @@ def enterhomepage(request):
                 'videoTitle': video.videoTitle,
                 'videoPlayNum': video.videoPlayNum,
                 'videoCommentNum': video.videoCommentNum,
-                'videoUpTime': video.videoUpTime,
+                'videoUpTime': str(video.videoUpTime),
                 'videoUpUser': video.videoUpUser.username,
                 'videoCover': str(video.videoCover),
             }
@@ -132,7 +132,7 @@ def enterhomepage(request):
                     'videoPlayNum': video.videoPlayNum,
                     'videoCommentNum': video.videoCommentNum,
                     'videoCover': str(video.videoCover),
-                    'videoUpTime': video.videoUpTime,
+                    'videoUpTime': str(video.videoUpTime),
                     'videoUpUser': video.videoUpUser.username,
                 }
                 favourlist.append(favour_item)
@@ -142,14 +142,14 @@ def enterhomepage(request):
             letter_item = {
                 'letterUser': letter.letterUser.username,
                 'letterText': letter.letterText,
-                'letterTime': letter.letterTime,
+                'letterTime': str(letter.letterTime),
             }
             letterlist.append(letter_item)
 
         browselist = []
         for browse in list(BrowseRecord.objects.filter(browseUser=entered_user)):
             browse_item = {
-                'browseTime': browse.BrowseTime,
+                'browseTime': str(browse.BrowseTime),
                 'browseVideoTitle': browse.BrowseVideo.videoTitle,
                 'browseVideoUser': browse.BrowseVideo.videoUpUser.username,
                 'browseVideoCover': str(browse.BrowseVideo.videoCover),
