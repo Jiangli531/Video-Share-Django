@@ -25,7 +25,7 @@ def like(request):
         except:
             return JsonResponse({'error': 4003, 'msg': "视频不存在"})
         liked_user = video.videoUpUser
-        if LikeRecord.objects.filter(likeUser=like_user, likedVideo=video).exists():
+        if LikeRecord.objects.filter(likeUser=like_user, likeVideo=video).exists():
             return JsonResponse({'error': 4001, 'msg': "已点赞"})
         LikeRecord.objects.create(likeUser=like_user, likedUser=liked_user, likeVideo=video)
         video.videoLikeNum = video.videoLikeNum + 1
