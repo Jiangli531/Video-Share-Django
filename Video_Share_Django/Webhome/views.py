@@ -29,10 +29,22 @@ def userinfo_edit(request):
                 repeated = UserInfo.objects.filter(username=username)
                 if repeated.exists():
                     return JsonResponse({'error': 4003, 'msg': '用户名重复'})
-            user.username = username
-            user.userInformation = userInformation
-            user.userSex = userSex
-            user.userBirthday = userBirthday
+            if username == '':
+                user.username = None
+            else:
+                user.username = username
+            if userInformation == '':
+                user.userInformation = None
+            else:
+                user.userInformation = userInformation
+            if userSex == '':
+                user.userSex = None
+            else:
+                user.userSex = userSex
+            if userBirthday == '':
+                user.userBirthday = None
+            else:
+                user.userBirthday = userBirthday
             user.save()
 
             return JsonResponse({'error': SUCCESS, 'msg': '修改成功'})

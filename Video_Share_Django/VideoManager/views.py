@@ -113,7 +113,6 @@ def getVideoByID(request):
     if request.method == 'POST':
         videoID = request.POST.get('videoID')
         userID = request.POST.get('userID')
-        user = UserInfo.objects.get(userID=userID)
         if VideoInfo.objects.filter(videoID=videoID).exists():
             video = VideoInfo.objects.get(videoID=videoID)
             up_user = video.videoUpUser
@@ -130,9 +129,15 @@ def getVideoByID(request):
             videoFavorNum = video.videoFavorNum
             upUserFansNum = video.videoUpUser.FansNum
             VideoCover = video.videoCoverPath
-            isLiked = LikeRecord.objects.filter(likeUser=user, likeVideo=video).exists()
-            isFavored = Favourites.objects.filter(favorUser=user, favorVideo=video).exists()
-            isFollowed = UserConnection.objects.filter(followerUser=user, followedUser=up_user).exists()
+            try:
+                user = UserInfo.objects.get(userID=userID)
+                isLiked = LikeRecord.objects.filter(likeUser=user, likeVideo=video).exists()
+                isFavored = Favourites.objects.filter(favorUser=user, favorVideo=video).exists()
+                isFollowed = UserConnection.objects.filter(followerUser=user, followedUser=up_user).exists()
+            except:
+                isLiked = False
+                isFavored = False
+                isFollowed = False
             comment_list = []
             for comment in VideoComment.objects.filter(commentVideo=video):
                 commentuser = comment.commentComUser
@@ -168,6 +173,7 @@ def getVideoIDByCondition(request):
         videoID_list = []
         video_part_list = []
         video_num = VideoInfo.objects.all().aggregate(Max('videoID'))
+        video_num = video_num['videoID__max']
         count = 0
         for video_part in VideoPartition.objects.all():
             part_name = video_part.videoPartName
