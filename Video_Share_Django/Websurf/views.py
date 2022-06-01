@@ -9,6 +9,8 @@ from Video_Share_Django.settings import WEB_ROOT
 from Weblogin.models import *
 from utils.response_code import *
 from utils.Global import *
+from UserCommunication.models import *
+
 
 @csrf_exempt
 def search(request):
@@ -66,5 +68,24 @@ def getUserInfoByID(request):
             return JsonResponse({'error': SUCCESS, 'user_info': json.dumps(user_info, ensure_ascii=False)})
         else:
             return JsonResponse({'error': 4001, 'msg': '用户不存在'})
+    else:
+        return JsonResponse({'error': 2001, 'msg': '请求方法错误'})
+
+
+@csrf_exempt
+def getConnectionInfoByID(request):
+    if request.method == 'POST':
+        userAID = request.POST.get('userAID')
+        userBID = request.POST.get('userBID')
+        try:
+            userA = UserInfo.objects.get(userID=userAID)
+            userB = UserInfo.objects.get(userID=userBID)
+        except:
+            return JsonResponse({'error': 4001, 'msg': '用户A或用户B不存在'})
+        if UserConnection.objects.filter(followerUser=userA, followedUser=userB).exists():
+            hasFollowed = True
+        else:
+            hasFollowed = False
+        return JsonResponse({'error': SUCCESS, 'hasFollowed': hasFollowed})
     else:
         return JsonResponse({'error': 2001, 'msg': '请求方法错误'})
