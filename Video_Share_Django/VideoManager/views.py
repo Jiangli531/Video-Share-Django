@@ -118,6 +118,7 @@ def getVideoByID(request):
             up_user = video.videoUpUser
             videoSrc = video.videoPath
             videoDesc = video.videoInformation
+            upID = video.videoUpUser.userID
             upAvatar = video.videoUpUser.userAvatar
             upName = video.videoUpUser.username
             upDesc = video.videoUpUser.userInformation
@@ -154,8 +155,8 @@ def getVideoByID(request):
                 }
                 comment_list.append(comment_item)
             return JsonResponse({'error': SUCCESS, 'videoSrc': videoSrc, 'videoDesc': videoDesc,
-                                 'videoComment': json.dumps(comment_list, ensure_ascii=False), 'upAvatar': upAvatar,
-                                 'upName': upName, 'upDesc': upDesc, 'uploadDate': uploadDate,
+                                 'videoComment': json.dumps(comment_list, ensure_ascii=False), 'upID': upID,
+                                 'upAvatar': upAvatar, 'upName': upName, 'upDesc': upDesc, 'uploadDate': uploadDate,
                                  'videoTitle': videoTitle, 'videoLikeNum': videoLikeNum, 'videoPlayNum': videoPlayNum,
                                     'videoCommentNum': videoCommentNum, 'videoFavorNum': videoFavorNum,
                                     'upUserFansNum': upUserFansNum, 'VideoCover': str(VideoCover), 'isLiked': isLiked,
