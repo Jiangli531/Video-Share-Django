@@ -58,7 +58,6 @@ INSTALLED_APPS = [
     'Weblogin',
     'Websurf',
     'corsheaders',
-    'db9',
 ]
 
 SESSION_ENGINE='django.contrib.sessions.backends.db'

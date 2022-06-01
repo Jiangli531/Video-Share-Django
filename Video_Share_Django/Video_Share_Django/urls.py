@@ -24,5 +24,4 @@ urlpatterns = [
     path('api/VideoManager/', include(('VideoManager.urls', 'VideoManager'), namespace="VideoManager")),
     path('api/UserCommunication/', include(('UserCommunication.urls', 'UserCommunication'), namespace="UserCommunication")),
     path('api/VideoInteraction/', include(('VideoInteraction.urls', 'VideoInteraction'), namespace="VideoInteraction")),
-    path('api/db9/', include(('db9.urls', 'db9'), namespace="db9")),
 ]
