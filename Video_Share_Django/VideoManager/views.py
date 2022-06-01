@@ -6,6 +6,7 @@ import re
 from django.db.models import Max
 from datetime import datetime
 
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 # from qcloud_cos import CosConfig
 # from qcloud_cos import CosS3Client
@@ -23,6 +24,7 @@ from utils.response_code import SUCCESS
 from VideoInteraction.models import LikeRecord
 from VideoInteraction.models import Favourites
 from UserCommunication.models import UserConnection
+from Websurf.models import BrowseRecord
 # Create your views here.
 
 @csrf_exempt  # 跨域设置
@@ -240,4 +242,27 @@ def getVideoIDByCondition(request):
                 return JsonResponse({'error': SUCCESS, 'videoID_list': videoID_list})
         else:
             return JsonResponse({'error': 4001, 'msg': 'Type类型错误'})
+
+
+@csrf_exempt  # 跨域设置
+def browseVideo(request):
+    if request.method == 'POST':
+        videoID = request.POST.get('videoID')
+        userID = request.POST.get('userID')
+        try:
+            video = VideoInfo.objects.get(videoID=videoID)
+            user = UserInfo.objects.get(userID=userID)
+        except:
+            return JsonResponse({'error': 4001, 'msg': '视频或用户不存在'})
+        if BrowseRecord.objects.filter(browseVideo=video, browseUser=user, browseVideoPartition=video.videoPart).exists():
+            browser_record = BrowseRecord.objects.get(browseVideo=video, browseUser=user,browseVideoPartition=video.videoPart)
+            browser_record.browseTime = timezone.now()
+            browser_record.save()
+        else:
+            BrowseRecord.objects.create(browseVideo=video, browseUser=user, browseVideoPartition=video.videoPart)
+        video.videoPlayNum += 1
+        video.save()
+        return JsonResponse({'error': SUCCESS})
+    else:
+        return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
 

@@ -69,8 +69,16 @@ class VideoManagerStatus:
     USER_NO_POWER = 4003  # 用户权限不足
 
 
-class GetVideoStatus:
+class GetVideoByIDStatus:
     VIDEO_NOT_EXISTS = 4001 # 视频不存在
+
+
+class GetVideoIDNYConditionStatus:
+    TYPE_ERROR = 4001  # 视频类型错误
+    NO_VIDEO_EXIST = 4002  # 没有满足条件的视频
+
+class BrowseStatus:
+    VIDEO_OR_USER_NOT_EXISTS = 4001  # 视频或用户不存在
 
 
 #VideoInteraction Part

@@ -59,11 +59,14 @@ def getUserInfoByID(request):
         userID = request.POST.get('userID')
         if UserInfo.objects.filter(userID=userID).exists():
             user = UserInfo.objects.get(userID=userID)
+            user_video_num = VideoInfo.objects.filter(videoUpUser=user).count()
             user_info = {
                 'userAvatar': user.userAvatar,
                 'username': user.username,
                 'userDesc': user.userInformation,
                 'userFansNum': user.FansNum,
+                'userVideosNum': user_video_num,
+                'userFollowNum': user.ConcernsNum,
             }
             return JsonResponse({'error': SUCCESS, 'user_info': json.dumps(user_info, ensure_ascii=False)})
         else:
