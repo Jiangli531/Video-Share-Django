@@ -171,11 +171,11 @@ def enterhomepage(request):
         browselist = []
         for browse in list(BrowseRecord.objects.filter(browseUser=entered_user)):
             browse_item = {
-                'browseTime': browse.BrowseTime.strftime("%Y-%m-%d %H:%M"),
-                'browseVideoID': browse.BrowseVideo.videoID,
-                'browseVideoTitle': browse.BrowseVideo.videoName,
-                'browseVideoUser': browse.BrowseVideo.videoUpUser.username,
-                'browseVideoCover': str(browse.BrowseVideo.videoCoverPath),
+                'browseTime': browse.browseTime.strftime("%Y-%m-%d %H:%M"),
+                'browseVideoID': browse.browseVideo.videoID,
+                'browseVideoTitle': browse.browseVideo.videoName,
+                'browseVideoUser': browse.browseVideo.videoUpUser.username,
+                'browseVideoCover': str(browse.browseVideo.videoCoverPath),
             }
             browselist.append(browse_item)
 
