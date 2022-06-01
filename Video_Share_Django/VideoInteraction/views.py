@@ -89,7 +89,7 @@ def favourites(request):
 
 
 @csrf_exempt  # 跨域设置
-def cancalfavourites(request):
+def cancelfavourites(request):
     if request.method == 'POST':
         userID = request.POST.get('userID')
         videoID = request.POST.get('videoID')
