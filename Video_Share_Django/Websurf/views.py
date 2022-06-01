@@ -49,3 +49,22 @@ def search(request):
             return JsonResponse({'error': SearchStatus.NO_KEY_ERROR, 'msg': '搜索内容不能为空'})
     else:
         return JsonResponse({'error': DEFAULT, 'msg': '请求方法错误'})
+
+
+@csrf_exempt
+def getUserInfoByID(request):
+    if request.method == 'POST':
+        userID = request.POST.get('userID')
+        if UserInfo.objects.filter(userID=userID).exists():
+            user = UserInfo.objects.get(userID=userID)
+            user_info = {
+                'userAvatar': user.userAvatar,
+                'username': user.username,
+                'userDesc': user.userInformation,
+                'userFansNum': user.FansNum,
+            }
+            return JsonResponse({'error': SUCCESS, 'user_info': json.dumps(user_info, ensure_ascii=False)})
+        else:
+            return JsonResponse({'error': 4001, 'msg': '用户不存在'})
+    else:
+        return JsonResponse({'error': 2001, 'msg': '请求方法错误'})
