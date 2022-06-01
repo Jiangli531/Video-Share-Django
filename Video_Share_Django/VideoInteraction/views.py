@@ -51,7 +51,7 @@ def cancellike(request):
         except:
             return JsonResponse({'error': 4003, 'msg': "视频不存在"})
         liked_user = video.videoUpUser
-        if LikeRecord.objects.filter(likeUser=like_user, likedVideo=video).exists():
+        if LikeRecord.objects.filter(likeUser=like_user, likeVideo=video).exists():
             LikeRecord.objects.get(likeUser=like_user, likedUser=liked_user, likeVideo=video).delete()
             liked_user.TotalLikeNum = liked_user.TotalLikeNum - 1 # 更新用户点赞总数
             liked_user.save()

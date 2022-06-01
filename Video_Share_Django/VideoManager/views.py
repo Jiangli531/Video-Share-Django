@@ -262,8 +262,8 @@ def browseVideo(request):
             BrowseRecord.objects.create(browseVideo=video, browseUser=user, browseVideoPartition=video.videoPart)
         video.videoPlayNum += 1
         video.save()
-        user.TotalPlayNum += 1
-        user.save()
+        video.videoUpUser.TotalPlayNum += 1
+        video.videoUpUser.save()
         return JsonResponse({'error': SUCCESS})
     else:
         return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
