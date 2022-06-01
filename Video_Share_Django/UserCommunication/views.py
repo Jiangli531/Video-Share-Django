@@ -172,6 +172,7 @@ def enterhomepage(request):
         for browse in list(BrowseRecord.objects.filter(browseUser=entered_user)):
             browse_item = {
                 'browseTime': browse.BrowseTime.strftime("%Y-%m-%d %H:%M"),
+                'browseVideoID': browse.BrowseVideo.videoID,
                 'browseVideoTitle': browse.BrowseVideo.videoName,
                 'browseVideoUser': browse.BrowseVideo.videoUpUser.username,
                 'browseVideoCover': str(browse.BrowseVideo.videoCoverPath),
