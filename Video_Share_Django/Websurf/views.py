@@ -92,3 +92,16 @@ def getConnectionInfoByID(request):
         return JsonResponse({'error': SUCCESS, 'hasFollowed': hasFollowed})
     else:
         return JsonResponse({'error': 2001, 'msg': '请求方法错误'})
+
+
+@csrf_exempt
+def webInfo(request):
+    if request.method == 'GET':
+        video_sum = VideoInfo.objects.all().count()
+        up_sum = VideoInfo.objects.values('videoUpUser').distinct().count()
+        user_sum = UserInfo.objects.all().count()
+        audit_sum = UserInfo.objects.filter(userLimit=True).count()
+        return JsonResponse({'error': SUCCESS, 'videoSum': video_sum, 'upSum': up_sum, 'auditSum':audit_sum,
+                             'userSum': user_sum})
+    else:
+        return JsonResponse({'error': 2001, 'msg': '请求方法错误'})

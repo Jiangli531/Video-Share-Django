@@ -56,6 +56,17 @@ class SearchStatus:
     NO_DATA_ERROR = 4004  # 没有检索到数据
 
 
+class GetUserInfoByIDStatus:
+    USER_NOT_EXISTS = 4001  # 用户不存在
+
+
+class GetConnectionInfoByIDStatus:
+    USERA_OR_USERB_NOT_EXISTS = 4001  # 用户不存在
+
+
+
+
+
 #Webhome Part
 class EditStatus:
     USER_NOT_EXISTS = 4001  # 用户不存在
