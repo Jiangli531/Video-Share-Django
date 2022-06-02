@@ -198,11 +198,11 @@ def getVideoIDByCondition(request):
 #                    else:
 #                        continue
 #                return JsonResponse({'error': SUCCESS, 'videoID': videoID_list, 'upID': upID_list})
-                if num_of_video <= 26:
+                if num_of_video <= 6:
                     for video in VideoInfo.objects.all():
                         videoID_list.append(video.videoID)
                 else:
-                    while count < 26:
+                    while count < 6:
                         found_id = random.randint(1, video_num)
                         if found_id not in videoID_list and VideoInfo.objects.filter(videoID=found_id, videoUpState=True).exists():
                             videoID_list.append(found_id)
@@ -217,12 +217,12 @@ def getVideoIDByCondition(request):
             if num_of_video == 0:
                 return JsonResponse({'error': 4002, 'msg': '没有符合条件的视频'})
             else:
-                if num_of_video <= 26:
+                if num_of_video <= 6:
                     for video in VideoInfo.objects.filter(videoUpState=False):
                         videoID_list.append(video.videoID)
                         upID_list.append(video.videoUpUser.userID)  # 上传者ID
                 else:
-                    while count < 26:
+                    while count < 6:
                         found_id = random.randint(1, video_num)
                         try:
                             if (found_id not in videoID_list) and (not VideoInfo.objects.get(videoID=found_id).videoUpState):
@@ -241,12 +241,12 @@ def getVideoIDByCondition(request):
             if num_of_video == 0:
                 return JsonResponse({'error': 4002, 'msg': '没有符合条件的视频'})
             else:
-                if num_of_video <= 26:
+                if num_of_video <= 6:
                     for video in VideoInfo.objects.filter(videoPart=video_part_need.videoPartName, videoUpState=True):
                         videoID_list.append(video.videoID)
                         upID_list.append(video.videoUpUser.userID)  # 上传者ID
                 else:
-                    while count < 26:
+                    while count < 6:
                         found_id = random.randint(1, video_num)
                         try:
                             if found_id not in videoID_list and \
