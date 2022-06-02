@@ -186,14 +186,23 @@ def getVideoIDByCondition(request):
         if video_type == 'Any':
             num_of_video = VideoInfo.objects.filter(videoUpState=True).count()
             if num_of_video == 0:
-                return JsonResponse({'error': 4002, 'msg': '没有符合条件的视频'})
+               return JsonResponse({'error': 4002, 'msg': '没有符合条件的视频'})
             else:
-                if num_of_video <= 6:
+#               while count < num_of_video:
+#                   found_id = random.randint(1, video_num)
+#                    if VideoInfo.objects.filter(videoID=found_id, videoUpState=True).exists():
+#                        video = VideoInfo.objects.get(videoID=found_id, videoUpState=True)
+#                        videoID_list.append(video.videoID)
+#                        upID_list.append(video.videoUpUser.userID)
+#                        count += 1
+#                    else:
+#                        continue
+#                return JsonResponse({'error': SUCCESS, 'videoID': videoID_list, 'upID': upID_list})
+                if num_of_video <= 26:
                     for video in VideoInfo.objects.all():
                         videoID_list.append(video.videoID)
-                        upID_list.append(video.videoUpUser.userID)  # 上传者ID
                 else:
-                    while count < 6:
+                    while count < 26:
                         found_id = random.randint(1, video_num)
                         if found_id not in videoID_list and VideoInfo.objects.filter(videoID=found_id, videoUpState=True).exists():
                             videoID_list.append(found_id)
@@ -208,12 +217,12 @@ def getVideoIDByCondition(request):
             if num_of_video == 0:
                 return JsonResponse({'error': 4002, 'msg': '没有符合条件的视频'})
             else:
-                if num_of_video <= 6:
+                if num_of_video <= 26:
                     for video in VideoInfo.objects.filter(videoUpState=False):
                         videoID_list.append(video.videoID)
                         upID_list.append(video.videoUpUser.userID)  # 上传者ID
                 else:
-                    while count < 6:
+                    while count < 26:
                         found_id = random.randint(1, video_num)
                         try:
                             if (found_id not in videoID_list) and (not VideoInfo.objects.get(videoID=found_id).videoUpState):
@@ -232,12 +241,12 @@ def getVideoIDByCondition(request):
             if num_of_video == 0:
                 return JsonResponse({'error': 4002, 'msg': '没有符合条件的视频'})
             else:
-                if num_of_video <= 6:
+                if num_of_video <= 26:
                     for video in VideoInfo.objects.filter(videoPart=video_part_need.videoPartName, videoUpState=True):
                         videoID_list.append(video.videoID)
                         upID_list.append(video.videoUpUser.userID)  # 上传者ID
                 else:
-                    while count < 6:
+                    while count < 26:
                         found_id = random.randint(1, video_num)
                         try:
                             if found_id not in videoID_list and \
@@ -253,6 +262,7 @@ def getVideoIDByCondition(request):
                 return JsonResponse({'error': SUCCESS, 'videoID_list': videoID_list, 'upID_list': upID_list})
         else:
             return JsonResponse({'error': 4001, 'msg': 'Type类型错误'})
+
 
 
 @csrf_exempt  # 跨域设置
