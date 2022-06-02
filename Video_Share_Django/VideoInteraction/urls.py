@@ -5,7 +5,7 @@ urlpatterns = [
     path('like/', like),
     path('cancellike/', cancellike),
     path('favourites/', favourites),
-    path('cancalfavourites/', cancelfavourites),
+    path('cancelfavourites/', cancelfavourites),
     path('comment/', comment),
     path('cancelcomment/', cancelcomment),
     path('editcomment/', editcomment),
