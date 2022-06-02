@@ -111,7 +111,7 @@ def enterhomepage(request):
         }
         msg_list.append(msg_item)
         video_list = []
-        for video in list(VideoInfo.objects.filter(videoUpUser=entered_user)):
+        for video in list(VideoInfo.objects.filter(videoUpUser=entered_user, videoUpState=True)):
             video_item = {
                 'videoID': video.videoID,
                 'videoTitle': video.videoName,
@@ -147,7 +147,7 @@ def enterhomepage(request):
         favourlist = []
         for favourite in list(Favourites.objects.filter(favorUser=entered_user)):
             video = favourite.favorVideo
-            if video.videoUpState == 1:
+            if video.videoUpState:
                 favour_item = {
                     'videoID': video.videoID,
                     'videoTitle': video.videoName,
@@ -170,14 +170,15 @@ def enterhomepage(request):
 
         browselist = []
         for browse in list(BrowseRecord.objects.filter(browseUser=entered_user)):
-            browse_item = {
-                'browseTime': browse.browseTime.strftime("%Y-%m-%d %H:%M"),
-                'browseVideoID': browse.browseVideo.videoID,
-                'browseVideoTitle': browse.browseVideo.videoName,
-                'browseVideoUser': browse.browseVideo.videoUpUser.username,
-                'browseVideoCover': str(browse.browseVideo.videoCoverPath),
-            }
-            browselist.append(browse_item)
+            if browse.browseVideo.videoUpState:
+                browse_item = {
+                    'browseTime': browse.browseTime.strftime("%Y-%m-%d %H:%M"),
+                    'browseVideoID': browse.browseVideo.videoID,
+                    'browseVideoTitle': browse.browseVideo.videoName,
+                    'browseVideoUser': browse.browseVideo.videoUpUser.username,
+                    'browseVideoCover': str(browse.browseVideo.videoCoverPath),
+                }
+                browselist.append(browse_item)
 
         return JsonResponse({'error': SUCCESS, 'msg_list': json.dumps(msg_list, ensure_ascii=False),
                              'video_list': json.dumps(video_list, ensure_ascii=False),

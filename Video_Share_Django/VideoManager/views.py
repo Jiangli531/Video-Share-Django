@@ -68,6 +68,7 @@ def deletevideo(request):
                 if video.videoUpUser.userID == user.userID or user.userLimit:
                     videoUpUser = video.videoUpUser
                     videoUpUser.TotalLikeNum -= video.videoLikeNum  # 用户总点赞数需要更新
+                    videoUpUser.TotalPlayNum -= video.videoPlayNum  # 用户总播放数需要更新
                     videoUpUser.save()
                     VideoInfo.objects.get(videoID=videoID).delete()
                     return JsonResponse({'error': SUCCESS, 'msg': '删除成功'})
@@ -115,8 +116,8 @@ def getVideoByID(request):
     if request.method == 'POST':
         videoID = request.POST.get('videoID')
         userID = request.POST.get('userID')
-        if VideoInfo.objects.filter(videoID=videoID).exists():
-            video = VideoInfo.objects.get(videoID=videoID)
+        if VideoInfo.objects.filter(videoID=videoID, videoUpState=True).exists():
+            video = VideoInfo.objects.get(videoID=videoID, videoUpState=True)
             up_user = video.videoUpUser
             videoSrc = video.videoPath
             videoDesc = video.videoInformation
@@ -175,6 +176,7 @@ def getVideoIDByCondition(request):
         video_type = request.POST.get('Type')
         videoID_list = []
         video_part_list = []
+        upID_list = []
         video_num = VideoInfo.objects.all().aggregate(Max('videoID'))
         video_num = video_num['videoID__max']
         count = 0
@@ -182,22 +184,25 @@ def getVideoIDByCondition(request):
             part_name = video_part.videoPartName
             video_part_list.append(part_name)
         if video_type == 'Any':
-            num_of_video = VideoInfo.objects.filter().count()
+            num_of_video = VideoInfo.objects.filter(videoUpState=True).count()
             if num_of_video == 0:
                 return JsonResponse({'error': 4002, 'msg': '没有符合条件的视频'})
             else:
                 if num_of_video <= 6:
                     for video in VideoInfo.objects.all():
                         videoID_list.append(video.videoID)
+                        upID_list.append(video.videoUpUser.userID)  # 上传者ID
                 else:
                     while count < 6:
                         found_id = random.randint(1, video_num)
-                        if found_id not in videoID_list and VideoInfo.objects.filter(videoID=found_id).exists():
+                        if found_id not in videoID_list and VideoInfo.objects.filter(videoID=found_id, videoUpState=True).exists():
                             videoID_list.append(found_id)
+                            video = VideoInfo.objects.get(videoID=found_id, videoUpState=True)
+                            upID_list.append(video.videoUpUser.userID)  # 上传者ID
                             count += 1
                         else:
                             continue
-                return JsonResponse({'error': SUCCESS, 'videoID_list': videoID_list})
+                return JsonResponse({'error': SUCCESS, 'videoID_list': videoID_list, 'upID_list': upID_list})
         elif video_type == 'Audit':
             num_of_video = VideoInfo.objects.filter(videoUpState=False).count()
             if num_of_video == 0:
@@ -206,40 +211,46 @@ def getVideoIDByCondition(request):
                 if num_of_video <= 6:
                     for video in VideoInfo.objects.filter(videoUpState=False):
                         videoID_list.append(video.videoID)
+                        upID_list.append(video.videoUpUser.userID)  # 上传者ID
                 else:
                     while count < 6:
                         found_id = random.randint(1, video_num)
                         try:
                             if (found_id not in videoID_list) and (not VideoInfo.objects.get(videoID=found_id).videoUpState):
                                 videoID_list.append(found_id)
+                                video = VideoInfo.objects.get(videoID=found_id, videoUpState=True)
+                                upID_list.append(video.videoUpUser.userID)  # 上传者ID
                                 count += 1
                         except:
                             continue
                         else:
                             continue
-                return JsonResponse({'error': SUCCESS, 'videoID_list': videoID_list})
+                return JsonResponse({'error': SUCCESS, 'videoID_list': videoID_list, 'upID_list': upID_list})
         elif video_type in video_part_list:
             video_part_need = VideoPartition.objects.get(videoPartName=video_type)
-            num_of_video = VideoInfo.objects.filter(videoPart=video_part_need.videoPartName).count()
+            num_of_video = VideoInfo.objects.filter(videoPart=video_part_need.videoPartName, videoUpState=True).count()
             if num_of_video == 0:
                 return JsonResponse({'error': 4002, 'msg': '没有符合条件的视频'})
             else:
                 if num_of_video <= 6:
-                    for video in VideoInfo.objects.filter(videoPart=video_part_need.videoPartName):
+                    for video in VideoInfo.objects.filter(videoPart=video_part_need.videoPartName, videoUpState=True):
                         videoID_list.append(video.videoID)
+                        upID_list.append(video.videoUpUser.userID)  # 上传者ID
                 else:
                     while count < 6:
                         found_id = random.randint(1, video_num)
                         try:
                             if found_id not in videoID_list and \
-                                    VideoInfo.objects.get(videoID=found_id).videoPart == video_part_need.videoPartName:
+                                    VideoInfo.objects.get(videoID=found_id, videoUpState=True).videoPart == video_part_need.videoPartName:
                                 videoID_list.append(found_id)
+                                video = VideoInfo.objects.get(videoID=found_id, videoUpState=True)
+                                upID_list.append(video.videoUpUser.userID)  # 上传者ID
                                 count += 1
                         except:
                             continue
                         else:
                             continue
-                return JsonResponse({'error': SUCCESS, 'videoID_list': videoID_list})
+                return JsonResponse({'error': SUCCESS, 'videoID_list': videoID_list, 'upID_list': upID_list})
         else:
             return JsonResponse({'error': 4001, 'msg': 'Type类型错误'})
 
@@ -250,7 +261,7 @@ def browseVideo(request):
         videoID = request.POST.get('videoID')
         userID = request.POST.get('userID')
         try:
-            video = VideoInfo.objects.get(videoID=videoID)
+            video = VideoInfo.objects.get(videoID=videoID, videoUpState=True)
             user = UserInfo.objects.get(userID=userID)
         except:
             return JsonResponse({'error': 4001, 'msg': '视频或用户不存在'})
