@@ -27,6 +27,7 @@ def search(request):
                 if user_results:
                     for user in list(user_results):
                         user_item = {
+                            'userID': user.userID,
                             'username': user.username,
                             'userInformation': user.userInformation,
                             'userPortrait': user.userAvatar,
