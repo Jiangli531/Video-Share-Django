@@ -95,8 +95,6 @@ class BrowseStatus:
 #VideoInteraction Part
 class EditCommentStatus:
     COMMENT_NOT_EXISTS = 4001  # 评论不存在
-    USER_NOT_EXISTS = 4002  # 用户不存在
-    VIDEO_NOT_EXISTS = 4003  # 视频不存在
 
 class CancelCommentStatus:
     COMMENT_NOT_EXISTS = 4001  # 评论不存在

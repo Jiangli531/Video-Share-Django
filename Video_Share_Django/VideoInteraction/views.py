@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from Weblogin.models import UserInfo
 from VideoManager.models import VideoInfo
@@ -166,26 +167,15 @@ def cancelcomment(request):
 @csrf_exempt  # 跨域设置
 def editcomment(request):
     if request.method == 'POST':
-        userID = request.POST.get('userID')
-        videoID = request.POST.get('videoID')
-        comment = request.POST.get('comment')
+        commentID = request.POST.get('commentID')
         new_comment = request.POST.get('newComment')
         try:
-            user = UserInfo.objects.get(userID=userID)
-        except:
-            return JsonResponse({'error': 4002, 'msg': "用户不存在"})
-        try:
-            video = VideoInfo.objects.get(videoID=videoID)
-        except:
-            return JsonResponse({'error': 4003, 'msg': "视频不存在"})
-        commentted_user = video.videoUpUser
-        try:
-            pre_comment = VideoComment.objects.get(commentUpUser=commentted_user, commentComUser=user, commentVideo=video,
-                                    commentContent=comment)
+            comment = VideoComment.objects.get(commentID=commentID)
         except:
             return JsonResponse({'error': 4001, 'msg': "评论不存在"})
-        pre_comment.commentContent = new_comment
-        pre_comment.save()
+        comment.commentContent = new_comment
+        comment.commentTime = timezone.now()
+        comment.save()
         return JsonResponse({'error': 0, 'msg': "编辑成功"})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
