@@ -8,4 +8,5 @@ urlpatterns = [
     path('getVideoByID/', getVideoByID),
     path('getVideoIDByCondition/', getVideoIDByCondition),
     path('browseVideo/', browseVideo),
+    path('getAuditInfo/', getAuditInfo),
 ]

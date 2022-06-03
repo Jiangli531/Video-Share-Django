@@ -289,3 +289,21 @@ def browseVideo(request):
     else:
         return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
 
+
+@csrf_exempt  # 跨域设置
+def getAuditInfo(request):
+    if request.method == 'POST':
+        videoID = request.POST.get('videoID')
+        try:
+            video = VideoInfo.objects.get(videoID=videoID)
+        except:
+            return JsonResponse({'error': 4002, 'msg': '视频不存在'})
+        if AuditRecord.objects.filter(auditVideo=video).exists():
+            audit_record = AuditRecord.objects.filter(auditVideo=video).first()
+            auditID = audit_record.auditID
+            complainReason = audit_record.complainReason
+            return JsonResponse({'error': SUCCESS, 'auditID': auditID, 'complainReason': complainReason})
+        else:
+            return JsonResponse({'error': 4001, 'msg': '视频未在审核中'})
+    else:
+        return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
