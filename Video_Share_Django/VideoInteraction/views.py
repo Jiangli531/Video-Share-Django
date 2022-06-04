@@ -186,7 +186,7 @@ def complaintvideo(request):
     if request.method == 'POST':
         videoID = request.POST.get('videoID')
         complaint_userID = request.POST.get('complaintUserID')
-        complain_reason = request.POST.get('complainReason')
+        complain_reason = request.POST.get('complaintReason')
         try:
             video = VideoInfo.objects.get(videoID=videoID)
         except:
