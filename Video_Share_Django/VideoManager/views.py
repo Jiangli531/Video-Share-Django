@@ -323,10 +323,12 @@ def getAuditInfo(request):
         except:
             return JsonResponse({'error': 4002, 'msg': '视频不存在'})
         if AuditRecord.objects.filter(auditVideo=video).exists():
-            audit_record = AuditRecord.objects.filter(auditVideo=video).first()
-            auditID = audit_record.auditID
-            complainReason = audit_record.complainReason
-            return JsonResponse({'error': SUCCESS, 'auditID': auditID, 'complainReason': complainReason})
+            for audit_record in AuditRecord.objects.filter(auditVideo=video):
+                if not audit_record.isAudit:
+                    auditID = audit_record.auditID
+                    complainReason = audit_record.complainReason
+                    return JsonResponse({'error': SUCCESS, 'auditID': auditID, 'complainReason': complainReason})
+            return JsonResponse({'error': 4003, 'msg': '该视频所有投诉已处理'})
         else:
             return JsonResponse({'error': 4001, 'msg': '视频未在审核中'})
     else:

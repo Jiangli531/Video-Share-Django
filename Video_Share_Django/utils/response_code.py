@@ -94,7 +94,7 @@ class BrowseStatus:
 class getAuditInfoStatus:
     VIDEO_NOT_IN_AUDIT = 4001  # 视频不在审核状态
     VIDEO_NOT_EXISTS = 4002  # 视频或用户不存在
-
+    NO_RECORD_CONCERNING = 4003  # 没有查询到相关记录
 
 #VideoInteraction Part
 class EditCommentStatus:
