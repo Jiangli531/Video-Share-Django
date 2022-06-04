@@ -103,7 +103,7 @@ def webInfo(request):
         up_sum = VideoInfo.objects.values('videoUpUser').distinct().count()
         user_sum = UserInfo.objects.all().count()
         audit_sum = UserInfo.objects.filter(userLimit=True).count()
-        return JsonResponse({'error': SUCCESS, 'videoSum': video_sum, 'upSum': up_sum, 'auditSum':audit_sum,
-                             'userSum': user_sum})
+        return JsonResponse({'error': SUCCESS, 'videoNum': video_sum, 'uploaderNum': up_sum, 'admNum': audit_sum,
+                             'userNum': user_sum})
     else:
         return JsonResponse({'error': 2001, 'msg': '请求方法错误'})
