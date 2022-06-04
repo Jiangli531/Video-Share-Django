@@ -90,7 +90,10 @@ def auditvideo(request):
             audit = AuditRecord.objects.get(auditID=auditID)
             if request.session.get('is_login', None):
                 adminID = request.POST.get('AdministratorID')
-                administrator = UserInfo.objects.get(userID=adminID)
+                try:
+                    administrator = UserInfo.objects.get(userID=adminID)
+                except:
+                    return JsonResponse({'error': 4004, 'msg': '用户不存在'})
                 if administrator.userLimit == 1:
                     result = request.POST.get('AuditResult')
                     # audit.auditTime = request.POST.get('AuditTime')
@@ -101,7 +104,7 @@ def auditvideo(request):
                     if not result:
                         audit.auditVideo.videoUpState = False
                         audit.auditVideo.save()
-                        return JsonResponse({'error': SUCCESS, 'msg': '审核成功'})
+                    return JsonResponse({'error': SUCCESS, 'msg': '审核成功'})
                 else:
                     return JsonResponse({'error': 4003, 'msg': '用户无管理员权限'})
             else:
