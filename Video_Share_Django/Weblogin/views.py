@@ -41,7 +41,7 @@ def login(request):
                 request.session['email'] = email
                 request.session['username'] = user.username
                 request.session['id'] = user.userID
-                return JsonResponse({'error': 0, 'msg': '登录成功', 'userID': user.userID})
+                return JsonResponse({'error': 0, 'msg': '登录成功', 'userID': user.userID, 'isAudit': user.userLimit})
             else:
                 return JsonResponse({'error': 4003, 'msg': '密码错误'})
         else:
