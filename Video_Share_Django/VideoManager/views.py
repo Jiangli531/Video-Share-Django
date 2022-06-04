@@ -90,7 +90,10 @@ def auditvideo(request):
             audit = AuditRecord.objects.get(auditID=auditID)
             if request.session.get('is_login', None):
                 adminID = request.POST.get('AdministratorID')
-                administrator = UserInfo.objects.get(userID=adminID)
+                try:
+                    administrator = UserInfo.objects.get(userID=adminID)
+                except:
+                    return JsonResponse({'error': 4004, 'msg': '用户不存在'})
                 if administrator.userLimit == 1:
                     result = request.POST.get('AuditResult')
                     # audit.auditTime = request.POST.get('AuditTime')
@@ -101,7 +104,7 @@ def auditvideo(request):
                     if not result:
                         audit.auditVideo.videoUpState = False
                         audit.auditVideo.save()
-                        return JsonResponse({'error': SUCCESS, 'msg': '审核成功'})
+                    return JsonResponse({'error': SUCCESS, 'msg': '审核成功'})
                 else:
                     return JsonResponse({'error': 4003, 'msg': '用户无管理员权限'})
             else:
@@ -222,8 +225,12 @@ def getVideoIDByCondition(request):
             else:
                 if num_of_video <= 6:
                     for auditRecord in AuditRecord.objects.filter(isAudit=False):
-                        videoID_list.append(auditRecord.auditVideo.videoID)
-                        upID_list.append(auditRecord.complainedUser.userID)
+                        if auditRecord.auditVideo.videoUpState and auditRecord.auditVideo.videoID not in videoID_list:
+                            videoID_list.append(auditRecord.auditVideo.videoID)
+                            upID_list.append(auditRecord.complainedUser.userID)
+                            count += 1
+                    if count == 0:
+                        return JsonResponse({'error': 4002, 'msg': '没有符合条件的视频'})
 #                    for video in VideoInfo.objects.filter(videoUpState=False):
 #                        videoID_list.append(video.videoID)
 #                        upID_list.append(video.videoUpUser.userID)  # 上传者ID
@@ -231,9 +238,12 @@ def getVideoIDByCondition(request):
                     for auditRecord in AuditRecord.objects.filter(isAudit=False):
                         if count >= 6:
                             break
-                        videoID_list.append(auditRecord.auditVideo.videoID)
-                        upID_list.append(auditRecord.complainedUser.userID)
-                        count += 1
+                        if auditRecord.auditVideo.videoUpState and auditRecord.auditVideo.videoID not in videoID_list:
+                            videoID_list.append(auditRecord.auditVideo.videoID)
+                            upID_list.append(auditRecord.complainedUser.userID)
+                            count += 1
+                    if count == 0:
+                        return JsonResponse({'error': 4002, 'msg': '没有符合条件的视频'})
 #                    while count < 6:
 #                        found_id = random.randint(1, video_num)
 #                        try:
@@ -313,10 +323,12 @@ def getAuditInfo(request):
         except:
             return JsonResponse({'error': 4002, 'msg': '视频不存在'})
         if AuditRecord.objects.filter(auditVideo=video).exists():
-            audit_record = AuditRecord.objects.filter(auditVideo=video).first()
-            auditID = audit_record.auditID
-            complainReason = audit_record.complainReason
-            return JsonResponse({'error': SUCCESS, 'auditID': auditID, 'complainReason': complainReason})
+            for audit_record in AuditRecord.objects.filter(auditVideo=video):
+                if not audit_record.isAudit:
+                    auditID = audit_record.auditID
+                    complainReason = audit_record.complainReason
+                    return JsonResponse({'error': SUCCESS, 'auditID': auditID, 'complainReason': complainReason})
+            return JsonResponse({'error': 4003, 'msg': '该视频所有投诉已处理'})
         else:
             return JsonResponse({'error': 4001, 'msg': '视频未在审核中'})
     else:
