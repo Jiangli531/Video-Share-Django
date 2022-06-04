@@ -40,6 +40,7 @@ def search(request):
                 if video_results:
                     for video in list(video_results):
                             video_item = {
+                                'videoID': video.videoID,
                                 'videoName': video.videoName,
                                 'videoCoverPath': str(video.videoCoverPath),
                                 'videoPlayNum': video.videoPlayNum,
