@@ -42,6 +42,7 @@ class AuditRecord(models.Model):
     auditResult = models.BooleanField(default=False) # 审核结果
     auditID = models.AutoField(primary_key=True) # 审核记录ID
     complainReason = models.CharField(max_length=400) # 投诉理由
+    isAudit = models.BooleanField(default=False) # 是否已审核
 
     class Meta:
         db_table = 'AuditRecord'

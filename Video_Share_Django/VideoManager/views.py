@@ -96,6 +96,7 @@ def auditvideo(request):
                     # audit.auditTime = request.POST.get('AuditTime')
                     audit.auditResult = result
                     audit.auditUser = administrator
+                    audit.isAudit = True
                     audit.save()
                     if not result:
                         audit.auditVideo.videoUpState = False
@@ -213,27 +214,40 @@ def getVideoIDByCondition(request):
                             continue
                 return JsonResponse({'error': SUCCESS, 'videoID_list': videoID_list, 'upID_list': upID_list})
         elif video_type == 'Audit':
-            num_of_video = VideoInfo.objects.filter(videoUpState=False).count()
+            num_of_video = AuditRecord.objects.filter(isAudit=False).count()
+
+#            num_of_video = VideoInfo.objects.filter(videoUpState=False).count()
             if num_of_video == 0:
                 return JsonResponse({'error': 4002, 'msg': '没有符合条件的视频'})
             else:
                 if num_of_video <= 6:
-                    for video in VideoInfo.objects.filter(videoUpState=False):
-                        videoID_list.append(video.videoID)
-                        upID_list.append(video.videoUpUser.userID)  # 上传者ID
+                    for auditRecord in AuditRecord.objects.filter(isAudit=False):
+                        videoID_list.append(auditRecord.auditVideo.videoID)
+                        upID_list.append(auditRecord.complainedUser.userID)
+#                    for video in VideoInfo.objects.filter(videoUpState=False):
+#                        videoID_list.append(video.videoID)
+#                        upID_list.append(video.videoUpUser.userID)  # 上传者ID
                 else:
-                    while count < 6:
-                        found_id = random.randint(1, video_num)
-                        try:
-                            if (found_id not in videoID_list) and (not VideoInfo.objects.get(videoID=found_id).videoUpState):
-                                videoID_list.append(found_id)
-                                video = VideoInfo.objects.get(videoID=found_id, videoUpState=True)
-                                upID_list.append(video.videoUpUser.userID)  # 上传者ID
-                                count += 1
-                        except:
-                            continue
-                        else:
-                            continue
+                    for auditRecord in AuditRecord.objects.filter(isAudit=False):
+                        if count >= 6:
+                            break
+                        videoID_list.append(auditRecord.auditVideo.videoID)
+                        upID_list.append(auditRecord.complainedUser.userID)
+                        count += 1
+#                    while count < 6:
+#                        found_id = random.randint(1, video_num)
+#                        try:
+#                            print(found_id)
+#                            if (found_id not in videoID_list) and (not VideoInfo.objects.get(videoID=found_id).videoUpState):
+#                                videoID_list.append(found_id)
+#                                video = VideoInfo.objects.get(videoID=found_id, videoUpState=True)
+#                                upID_list.append(video.videoUpUser.userID)  # 上传者ID
+#                                count += 1
+#                            print(count)
+#                        except:
+#                            continue
+#                        else:
+#                            continue
                 return JsonResponse({'error': SUCCESS, 'videoID_list': videoID_list, 'upID_list': upID_list})
         elif video_type in video_part_list:
             video_part_need = VideoPartition.objects.get(videoPartName=video_type)
