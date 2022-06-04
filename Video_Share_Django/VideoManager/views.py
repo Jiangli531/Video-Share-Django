@@ -222,7 +222,7 @@ def getVideoIDByCondition(request):
             else:
                 if num_of_video <= 6:
                     for auditRecord in AuditRecord.objects.filter(isAudit=False):
-                        if auditRecord.auditVideo.videoUpState:
+                        if auditRecord.auditVideo.videoUpState and auditRecord.auditVideo.videoID not in videoID_list:
                             videoID_list.append(auditRecord.auditVideo.videoID)
                             upID_list.append(auditRecord.complainedUser.userID)
                             count += 1
@@ -235,11 +235,10 @@ def getVideoIDByCondition(request):
                     for auditRecord in AuditRecord.objects.filter(isAudit=False):
                         if count >= 6:
                             break
-                        if auditRecord.auditVideo.videoUpState:
-                            continue
-                        videoID_list.append(auditRecord.auditVideo.videoID)
-                        upID_list.append(auditRecord.complainedUser.userID)
-                        count += 1
+                        if auditRecord.auditVideo.videoUpState and auditRecord.auditVideo.videoID not in videoID_list:
+                            videoID_list.append(auditRecord.auditVideo.videoID)
+                            upID_list.append(auditRecord.complainedUser.userID)
+                            count += 1
                     if count == 0:
                         return JsonResponse({'error': 4002, 'msg': '没有符合条件的视频'})
 #                    while count < 6:
