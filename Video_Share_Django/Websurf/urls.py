@@ -8,5 +8,5 @@ urlpatterns = [
     path('search/', search),
     path('getUserInfoByID/', getUserInfoByID),
     path('getConnectionInfoByID/', getConnectionInfoByID),
-    path('webInfo/', webInfo),
+    path('getWebInfo/', webInfo),
 ]
