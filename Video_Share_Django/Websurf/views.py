@@ -99,7 +99,7 @@ def getConnectionInfoByID(request):
 @csrf_exempt
 def webInfo(request):
     if request.method == 'GET':
-        video_sum = VideoInfo.objects.all().count()
+        video_sum = VideoInfo.objects.filter(videoUpState=True).count()
         up_sum = VideoInfo.objects.values('videoUpUser').distinct().count()
         user_sum = UserInfo.objects.all().count()
         audit_sum = UserInfo.objects.filter(userLimit=True).count()
