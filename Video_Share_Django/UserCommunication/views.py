@@ -179,7 +179,7 @@ def enterhomepage(request):
                     'browseVideoCover': str(browse.browseVideo.videoCoverPath),
                 }
                 browselist.append(browse_item)
-        newLetterNum = UserLetter.objects.filter(letterIsRead=False, letteredUser=entered_user).count();
+        newLetterNum = UserLetter.objects.filter(letterIsRead=False, letteredUser=entered_user).count()
         return JsonResponse({'error': SUCCESS, 'msg_list': json.dumps(msg_list, ensure_ascii=False),
                              'video_list': json.dumps(video_list, ensure_ascii=False),
                              'fans_list': json.dumps(fanslist, ensure_ascii=False),
