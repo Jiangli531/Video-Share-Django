@@ -179,13 +179,14 @@ def enterhomepage(request):
                     'browseVideoCover': str(browse.browseVideo.videoCoverPath),
                 }
                 browselist.append(browse_item)
-
+        newLetterNum = UserLetter.objects.filter(letterIsRead=False, letteredUser=entered_user).count();
         return JsonResponse({'error': SUCCESS, 'msg_list': json.dumps(msg_list, ensure_ascii=False),
                              'video_list': json.dumps(video_list, ensure_ascii=False),
                              'fans_list': json.dumps(fanslist, ensure_ascii=False),
                              'concerns_list': json.dumps(concernslist, ensure_ascii=False),
                              'favour_list': json.dumps(favourlist, ensure_ascii=False),
                              'letter_list': json.dumps(letterlist, ensure_ascii=False),
-                             'browse_list': json.dumps(browselist, ensure_ascii=False)})
+                             'browse_list': json.dumps(browselist, ensure_ascii=False),
+                             'newLetterNum': newLetterNum})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})

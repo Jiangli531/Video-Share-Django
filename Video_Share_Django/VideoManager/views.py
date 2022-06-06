@@ -19,7 +19,7 @@ from VideoManager.models import VideoInfo
 from Weblogin.models import UserInfo
 from VideoManager.models import AuditRecord
 from VideoInteraction.models import VideoComment
-from UserCommunication.models import VideoPartition
+from UserCommunication.models import VideoPartition, UserLetter
 from utils.response_code import SUCCESS
 from VideoInteraction.models import LikeRecord
 from VideoInteraction.models import Favourites
@@ -331,5 +331,27 @@ def getAuditInfo(request):
             return JsonResponse({'error': 4003, 'msg': '该视频所有投诉已处理'})
         else:
             return JsonResponse({'error': 4001, 'msg': '视频未在审核中'})
+    else:
+        return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
+
+
+@csrf_exempt
+def sendResultInfo(request):
+    if request.method == 'POST':
+        videoID = request.POST.get('videoID')
+        adminID = request.POST.get('adminID')
+        message = request.POST.get('message')
+        try:
+            video = VideoInfo.objects.get(videoID=videoID, videoUpState=True)
+        except:
+            return JsonResponse({'error': 4001, 'msg': '视频不存在'})
+        try:
+            lettered_user = video.videoUpUser
+            letter_user = UserInfo.objects.get(userID=adminID)
+        except:
+            return JsonResponse({'error': 4002, 'msg': '用户不存在'})
+
+        UserLetter.objects.create(letterUser=letter_user, letteredUser=lettered_user, letterText=message)
+        return JsonResponse({'error': 0, 'msg': '通知发送成功'})
     else:
         return JsonResponse({'error': 2001, 'msg': '请求方式错误'})

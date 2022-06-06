@@ -19,6 +19,7 @@ class UserLetter(models.Model):
     letterText = models.TextField(null=False)
     letterTime = models.DateTimeField(auto_now_add=True, null=False)
     letterID = models.AutoField(primary_key=True, null=False)
+    letterIsRead = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'UserLetter'
