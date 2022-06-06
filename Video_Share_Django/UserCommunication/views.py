@@ -190,3 +190,19 @@ def enterhomepage(request):
                              'newLetterNum': newLetterNum})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
+
+
+@csrf_exempt
+def readLetter(request):
+    if request.method == 'POST':
+        userID = request.POST.get('userID')
+        try:
+            user = UserInfo.objects.get(userID=userID)
+        except:
+            return JsonResponse({'error': 4001, 'msg': '用户不存在'})
+        for letter in list(UserLetter.objects.filter(letteredUser=user, letterIsRead=False)):
+            letter.letterIsRead = True
+            letter.save()
+        return  JsonResponse({'error': 0, 'msg': '成功'})
+    else:
+        return JsonResponse({'error': 2001, 'msg': '请求方式错误'})

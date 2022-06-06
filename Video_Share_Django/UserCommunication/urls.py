@@ -6,5 +6,6 @@ urlpatterns = [
     path('cancelfollow/', cancelfollow),
     path('sendletter/', sendletter),
     path('enterhomepage/', enterhomepage),
+    path('readLetter/', readLetter),
 
 ]
