@@ -351,6 +351,8 @@ def sendResultInfo(request):
         except:
             return JsonResponse({'error': 4002, 'msg': '用户不存在'})
 
+        message = message+' 视频标题：'+video.videoName
+        print(message)
         UserLetter.objects.create(letterUser=letter_user, letteredUser=lettered_user, letterText=message)
         return JsonResponse({'error': 0, 'msg': '通知发送成功'})
     else:

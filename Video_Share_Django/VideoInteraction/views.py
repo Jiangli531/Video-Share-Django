@@ -140,25 +140,19 @@ def comment(request):
 @csrf_exempt  # 跨域设置
 def cancelcomment(request):
     if request.method == 'POST':
-        userID = request.POST.get('userID')
-        videoID = request.POST.get('videoID')
-        comment = request.POST.get('comment')
+        commentID = request.POST.get('commentID')
         try:
-            user = UserInfo.objects.get(userID=userID)
+            comment = VideoComment.objects.get(commentID=commentID)
         except:
-            return JsonResponse({'error': 4002, 'msg': "用户不存在"})
+            return JsonResponse({'error': 4001, 'msg': "评论不存在"})
+        videoID = comment.commentVideo.videoID
         try:
             video = VideoInfo.objects.get(videoID=videoID)
         except:
-            return JsonResponse({'error': 4003, 'msg': "视频不存在"})
-        commentted_user = video.videoUpUser
-        try:
-            VideoComment.objects.get(commentUpUser=commentted_user, commentComUser=user, commentVideo=video,
-                                    commentContent=comment).delete()
-        except:
-            return JsonResponse({'error': 4001, 'msg': "评论不存在"})
+            return JsonResponse({'error': 4002, 'msg': "视频不存在"})
         video.videoCommentNum = video.videoCommentNum - 1
         video.save()
+        comment.delete()
         return JsonResponse({'error': 0, 'msg': "取消评论成功"})
     else:
         return JsonResponse({'error': 2001, 'msg': "请求方式错误"})
